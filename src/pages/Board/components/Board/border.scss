@@ -1,47 +1,46 @@
 @import '../style/variables.scss';
 @import '../style/mixins.scss';
 
-
-body{
-    background: $fon-color;
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 100%;
-    height: 100%;
+body {
+  background: $fon-color;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
 }
-.border{
-    display: flex;
-    flex-direction: row;
-    gap: 100px;
+.border {
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
 }
-.list{
-    display: flex;
-    border: 5px solid yellow;
-    border-radius: 10px; 
-    width: 250px;
-    height: 400px;
-    background: $color-list;
+.list {
+  display: flex;
+  border: 5px solid yellow;
+  border-radius: 10px;
+  width: 250px;
+  height: 400px;
+  background: $color-list;
 }
-.headers{
-    display: flex;
-    justify-content: center;
+.headers {
+  display: flex;
+  justify-content: center;
 }
 .text {
-    text-align: center; 
-    font-size: 35px;
+  text-align: center;
+  font-size: 35px;
 }
-.buttonHome{
-    position: absolute;
-    left: 80px;
-    @include main-button();
+.buttonHome {
+  position: absolute;
+  left: 80px;
+  @include main-button();
 }
-.container{
-    margin: 20px 20px 0 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 50px;
+.container {
+  margin: 20px 20px 0 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 50px;
 }
-.buttonAdd{
-    @include main-button();
+.buttonAdd {
+  @include main-button();
 }

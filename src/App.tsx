@@ -4,7 +4,6 @@ import logo from './logo.svg';
 import Board from './pages/Board/components/Board/Board';
 import './App.css';
 
-
 function App() {
   return (
     <BrowserRouter>

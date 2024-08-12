@@ -1,23 +1,23 @@
 @import '../style/variables.scss';
 
-@mixin main-button{
-    width: 200px;
-    height: 50px;
-    border-radius: 5px;
-    background-color: $color-button-main;
+@mixin main-button {
+  width: 200px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: $color-button-main;
 }
-@mixin secondary-button{
-    width: 150px;
-    height: 25px;
-    border-radius: 3px;
-    background: $color-button-secondary;
+@mixin secondary-button {
+  width: 150px;
+  height: 25px;
+  border-radius: 3px;
+  background: $color-button-secondary;
 }
-@mixin list-string{
-    display: flex;
-    width: 200px;
-    height: 40px;
-    align-items: center;
-    justify-content: flex-start;
-    background: $color-list-string;
-    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3); 
+@mixin list-string {
+  display: flex;
+  width: 200px;
+  height: 40px;
+  align-items: center;
+  justify-content: flex-start;
+  background: $color-list-string;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
 }

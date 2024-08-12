@@ -1,0 +1,10 @@
+@import '../style/variables.scss';
+@import '../style/mixins.scss';
+
+
+.list-li{
+@include list-string();
+}
+.div-li{
+    margin-left: 10px;
+}

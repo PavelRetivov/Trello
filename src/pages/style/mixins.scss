@@ -1,0 +1,55 @@
+@import '../style/variables.scss';
+
+@mixin main-button {
+  width: 200px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: $color-button-main;
+}
+@mixin secondary-button {
+  width: 150px;
+  height: 25px;
+  border-radius: 3px;
+  background: $color-button-secondary;
+}
+@mixin list-string {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  justify-content: flex-start;
+  background: $color-list-string;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+@mixin home-board-button {
+  width: 200px;
+  height: 150px;
+  font-size: 16px;
+  line-height: 18px;
+  border-radius: 8px;
+}
+@mixin modal-window {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 250px;
+  height: 300px;
+  background: $color-modal-window;
+  z-index: 101;
+  border-radius: 15px;
+}
+@mixin modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+}
+@mixin modal-fon {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  z-index: 10;
+}

@@ -1,46 +1,111 @@
-@import '../style/variables.scss';
-@import '../style/mixins.scss';
+@import '../../../style/variables.scss';
+@import '../../../style/mixins.scss';
+@import url($url-text-input-h1);
 
-body {
-  background: $fon-color;
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
-  height: 100%;
+.container {
+  min-height: 100vh;
+  background: $color-list-string;
+  padding: 0 20px 0 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 50px;
+  .styleDisplay {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
 }
 .border {
   display: flex;
   flex-direction: row;
   gap: 100px;
+  min-height: 300px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-grow: 1;
+  border: 5px solid black;
+  border-bottom: 0px;
+  border-right: 0px;
+  border-top-left-radius: 10px;
+  padding: 30px 10px 30px 50px;
 }
 .list {
   display: flex;
+  flex-direction: column;
   border: 5px solid yellow;
   border-radius: 10px;
-  width: 250px;
-  height: 400px;
+  width: 265px;
+  min-height: 100px;
   background: $color-list;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .headers {
+  margin: 20px 0 150px 50px;
   display: flex;
   justify-content: center;
 }
 .text {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 35px;
+  min-width: 100px;
 }
 .buttonHome {
   position: absolute;
   left: 80px;
   @include main-button();
 }
-.container {
-  margin: 20px 20px 0 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 50px;
-}
 .buttonAdd {
   @include main-button();
+  min-width: 200px;
+}
+.modalWindows {
+  @include modal;
+}
+.textTitle {
+  border: none;
+  background: none;
+  box-shadow: none;
+  outline: none;
+  font-size: 50px;
+  position: absolute;
+  left: 300px;
+  margin: 0;
+  padding: 0;
+  font-family: 'Rubik Doodle Shadow', system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+.head-position {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  min-height: 20px;
+  font-size: 12px;
+  justify-content: space-around;
+  h1 {
+    margin: 0;
+    padding: 0;
+  }
+  .button-position {
+    display: flex;
+    justify-content: flex-end;
+    width: 100px;
+    gap: 5px;
+    button {
+      width: 38px;
+      height: 20px;
+    }
+  }
+}
+
+input::before,
+input::after {
+  content: none; /* Убирает псевдоэлементы */
 }

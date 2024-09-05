@@ -1,0 +1,15 @@
+@import '../../../../../style/mixins.scss';
+@import '../../../../../style/variables.scss';
+
+.ModalWindowsAdd {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.modal-style {
+  @include modal-window;
+}
+.deleteCard {
+  position: relative;
+}

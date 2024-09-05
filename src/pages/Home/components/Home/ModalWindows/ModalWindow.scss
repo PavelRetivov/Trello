@@ -1,0 +1,42 @@
+@import '../../../../style/variables.scss';
+@import '../../../../style/mixins.scss';
+@import url($url-text-label);
+
+.modal-windows {
+  @include modal-window;
+  label {
+    font-family: 'Lunasima', sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 18px;
+  }
+  input[type='text'] {
+    border-radius: 5px;
+  }
+  input#colorName {
+    width: 50px; /* Ширина інпуту */
+    height: 50px; /* Висота інпуту */
+    border-radius: 50%;
+  }
+
+  input[type='color'] {
+    border: none; /* Видаляє границю */
+    padding: 0; /* Видаляє зайві відступи, якщо є */
+  }
+
+  input[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0; /* Видаляє відступи усередині елемента */
+  }
+
+  input[type='color']::-webkit-color-swatch {
+    border: none; /* Видаляє границю у Chrome та Edge */
+  }
+  button {
+    @include secondary-button;
+  }
+  p {
+    padding: 0;
+    margin: 0;
+    font-size: 10px;
+  }
+}

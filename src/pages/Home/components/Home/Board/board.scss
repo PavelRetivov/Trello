@@ -1,0 +1,30 @@
+@import '../../../../style/variables.scss';
+@import '../../../../style/mixins.scss';
+
+.board-style {
+  a {
+    text-decoration: none;
+  }
+}
+.board-button {
+  @include home-board-button;
+  display: flex;
+  text-align: start;
+  justify-content: start;
+  padding: 20px;
+  background: white;
+  h1 {
+    width: 100%;
+    word-wrap: break-word;
+    font-size: 20px;
+    margin: 20px 10px 20px 0;
+    line-height: 24px;
+    color: rgb(48, 35, 43);
+  }
+}
+.modal-window {
+  @include modal;
+}
+.modal-fon {
+  @include modal-fon;
+}

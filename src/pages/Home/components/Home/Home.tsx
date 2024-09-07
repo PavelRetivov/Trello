@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Board from './Board/Board';
 import './home.scss';
 import IDate from '../interface/IData';
@@ -7,13 +7,13 @@ import getData from '../Backend/Get/Get';
 import Delete from '../Backend/Delet/Delete';
 import ModalWindowEdit from './ModalWindows/ModalWindowEdit';
 
-function home() {
+function Home(): JSX.Element {
   const [boards, setBoards] = useState<IDate[]>([]);
   const [modalWindowsAdd, setModalWindowsAdd] = useState(false);
   const [modalWindowsEdition, setModalWindowsEdition] = useState(false);
   const [boardId, setBoardId] = useState<number | undefined>(undefined);
   const [boardTitle, setBoardTitle] = useState<string | undefined>(undefined);
-  const [boardCustom, setBoardCustom] = useState<any>(undefined);
+  const [boardCustom, setBoardCustom] = useState<object | undefined>(undefined);
   const [positionModal, setPositionModal] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -23,32 +23,32 @@ function home() {
     height: positionModal.height / 2 - 150,
   };
 
-  //resize position modalWindows when change size windows
+  // resize position modalWindows when change size windows
   useEffect(() => {
-    const resize = () => {
+    const resize = (): void => {
       setPositionModal({ width: window.innerWidth, height: window.innerHeight });
     };
     window.addEventListener('resize', resize);
-    return () => {
+    return (): void => {
       window.removeEventListener('resize', resize);
     };
   }, [positionModal]);
 
-  //working in dataBase and establishes set data Boards
-  const getDataBoard = async () => {
+  // working in dataBase and establishes set data Boards
+  const getDataBoard = async (): Promise<void> => {
     const data = (await getData()) as IDate[];
     if (data) {
       setBoards(data);
     }
   };
 
-  //start getDataBoards the first time
+  // start getDataBoards the first time
   useEffect(() => {
     getDataBoard();
   }, []);
-  //close modal windows add
+  // close modal windows add
   useEffect(() => {
-    const clickWindow = () => {
+    const clickWindow = (): void => {
       if (modalWindowsAdd) {
         setModalWindowsAdd(false);
       }
@@ -56,14 +56,14 @@ function home() {
     setTimeout(() => {
       window.addEventListener('click', clickWindow);
     }, 100);
-    return () => {
+    return (): void => {
       window.removeEventListener('click', clickWindow);
     };
   }, [modalWindowsAdd]);
 
-  //close modal windows Edition
+  // close modal windows Edition
   useEffect(() => {
-    const clickWindow = () => {
+    const clickWindow = (): void => {
       if (modalWindowsEdition) {
         setModalWindowsEdition(false);
       }
@@ -71,24 +71,24 @@ function home() {
     setTimeout(() => {
       window.addEventListener('click', clickWindow);
     }, 100);
-    return () => {
+    return (): void => {
       window.removeEventListener('click', clickWindow);
     };
   }, [modalWindowsEdition]);
 
-  //open modal windows add
-  const OnModal = () => {
+  // open modal windows add
+  const OnModal = (): void => {
     setModalWindowsAdd(true);
   };
 
-  //Delete board by id
-  const DeleteClick = async (id: number) => {
+  // Delete board by id
+  const DeleteClick = async (id: number): Promise<void> => {
     setBoards(boards.filter((board) => board.id !== id));
     await Delete(id);
   };
 
-  //open modal windows Edition
-  const EditClick = async (id: number, title: string, custom: any) => {
+  // open modal windows Edition
+  const EditClick = async (id: number, title: string, custom: object): Promise<void> => {
     setBoardId(id);
     setBoardTitle(title);
     setBoardCustom(custom);
@@ -142,4 +142,4 @@ function home() {
   );
 }
 
-export default home;
+export default Home;

@@ -3,9 +3,9 @@ interface List {
   id: number;
   title: string;
   position: number;
-  board_id: string | undefined;
-  getList: Function;
-  setIsOpenModalWindowsAddCards: Function;
+  boardId: string | undefined;
+  getList: () => void;
+  setIsOpenModalWindowsAddCards: (isOpen: boolean) => void;
 }
 
 export default List;

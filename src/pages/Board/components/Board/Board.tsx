@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import List from './List/List';
 import ICard from '../interfaces/ICard';
 import './border.scss';
-import { Link, useParams } from 'react-router-dom';
 import getData from '../Backend/Get/Get';
 import interfaceList from '../interfaces/IList';
 import ModalWindowsAdd from './modalWindowsIsAdd/ModalWindowsAdd';
@@ -10,15 +10,15 @@ import ModalWindowEdit from './ModalWindowsEdit/ModalWindowsEdit';
 import Delete from '../Backend/Delete/Delete';
 import putData from '../Backend/PUT/Put';
 
-function Board() {
-  const { board_id } = useParams();
+function Board(): JSX.Element {
+  const { boardId } = useParams();
   const [title, setTitle] = useState('');
   const [isInputTitle, setIsInputTitle] = useState(false);
   const [list, setList] = useState<interfaceList[]>();
   const [boardConfig, setBoardConfig] = useState<
     | {
-        title: string;
-        board_id: string;
+        titleNew: string;
+        boardIdNew: string;
         id: number;
       }
     | undefined
@@ -39,20 +39,21 @@ function Board() {
   let enterPresent = false;
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  //resize position modalWindows when change size windows
+  // resize position modalWindows when change size windows
   useEffect(() => {
-    const resize = () => {
+    const resize = (): void => {
       setPosition({ width: window.innerWidth, height: window.innerHeight });
     };
     window.addEventListener('resize', resize);
-    return () => {
+    return (): void => {
       window.removeEventListener('resize', resize);
     };
   }, [position]);
 
-  //take data Title and List if they have
-  const getList = async () => {
-    const data = board_id ? await getData(board_id) : undefined;
+  // take data Title and List if they have
+  const getList = async (): Promise<void> => {
+    const data = boardId ? await getData(boardId) : undefined;
+    console.log(boardId);
     if (
       data &&
       'lists' in data &&
@@ -61,23 +62,24 @@ function Board() {
       'title' in data &&
       typeof data.title === 'string'
     ) {
+      console.log(data);
       setList(data.lists);
       setTitle(data.title);
     }
   };
 
-  //function for update information when update data
+  // function for update information when update data
   useEffect(() => {
     getList();
-  }, [board_id]);
+  }, [boardId]);
 
-  const openModalWindows = () => {
+  const openModalWindows = (): void => {
     setIsOpenModalWindowsAdd(true);
   };
 
-  //controls open and close modal windows
+  // controls open and close modal windows
   useEffect(() => {
-    const closeModal = () => {
+    const closeModal = (): void => {
       if (isOpenModalWindowsAdd || isOpenModalWindowsEdit) {
         setIsOpenModalWindowsAdd(false);
         setIsOpenModalWindowsEdit(false);
@@ -87,49 +89,49 @@ function Board() {
       document.addEventListener('click', closeModal);
     }, 100);
 
-    return () => {
+    return (): void => {
       document.removeEventListener('click', closeModal);
     };
   }, [isOpenModalWindowsAdd, isOpenModalWindowsEdit]);
 
-  const openModalWindowsEdit = (title: string, board_id: string | undefined, id: number) => {
-    if (board_id) setBoardConfig({ title, board_id, id });
+  const openModalWindowsEdit = (titleNew: string, boardIdNew: string | undefined, id: number): void => {
+    if (boardIdNew) setBoardConfig({ titleNew, boardIdNew, id });
     setIsOpenModalWindowsEdit(true);
   };
 
-  const deleteListById = async (boar_id: string | undefined, id_list: number) => {
-    if (boar_id) {
-      await Delete(boar_id, id_list);
+  const deleteListById = async (boarId: string | undefined, idlList: number): Promise<void> => {
+    if (boarId) {
+      await Delete(boarId, idlList);
       getList();
     }
   };
 
-  /*setting title edit, when you edit title(name head board) you can edit this method enter 
+  /* setting title edit, when you edit title(name head board) you can edit this method enter 
   and click mouse, this is regulated two function enterInputTitle and offPointerEvents
   */
 
-  //control edit by click mouse
-  const offPointerEvents = async () => {
+  // control edit by click mouse
+  const offPointerEvents = async (): Promise<void> => {
     if (enterPresent) {
       enterPresent = false;
       return;
     }
-    if (board_id) await putData(board_id, undefined, title);
+    if (boardId) await putData(boardId, undefined, title);
     if (inputRef.current) inputRef.current.blur();
     setIsInputTitle(false);
   };
 
-  //control edit by press enter
-  const enterInputTitle = async (event: React.KeyboardEvent) => {
+  // control edit by press enter
+  const enterInputTitle = async (event: React.KeyboardEvent): Promise<void> => {
     if (event.key === 'Enter') {
       enterPresent = true;
-      if (board_id) await putData(board_id, undefined, title);
+      if (boardId) await putData(boardId, undefined, title);
       if (inputRef.current) inputRef.current.blur();
       setIsInputTitle(false);
     }
   };
 
-  const changeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changeTitle = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
     setIsInputTitle(true);
   };
@@ -146,7 +148,7 @@ function Board() {
         }}
       >
         <div className="headers">
-          <Link to={'/'}>
+          <Link to="/">
             <button className="buttonHome">Домой</button>
           </Link>
           <div>
@@ -168,19 +170,19 @@ function Board() {
           {list
             ? list
                 .sort((a, b) => a.position - b.position)
-                .map((card, index) => {
+                .map((card) => {
                   return (
-                    <div>
+                    <div key={card.id}>
                       <div className="list">
                         <div className="head-position">
                           <h1>{card.title}</h1>
                           <div className="button-position">
-                            <button onClick={() => deleteListById(board_id, card.id)}>X</button>
-                            <button onClick={() => openModalWindowsEdit(card.title, board_id, card.id)}>Edit</button>
+                            <button onClick={() => deleteListById(boardId, card.id)}>X</button>
+                            <button onClick={() => openModalWindowsEdit(card.title, boardId, card.id)}>Edit</button>
                           </div>
                         </div>
                         <List
-                          board_id={board_id}
+                          boardId={boardId}
                           title={card.title}
                           cards={card.cards as ICard[]}
                           id={card.id}
@@ -201,7 +203,7 @@ function Board() {
       {isOpenModalWindowsAdd ? (
         <div className="modalWindows" style={{ top: modalPosition.height, left: modalPosition.width }}>
           <ModalWindowsAdd
-            id_border={board_id ? board_id : 'error'}
+            idBorder={boardId || 'error'}
             setIsOpenModalWindows={setIsOpenModalWindowsAdd}
             getList={getList}
           />

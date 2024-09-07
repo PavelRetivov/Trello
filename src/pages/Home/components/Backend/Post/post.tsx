@@ -1,11 +1,10 @@
 import api from '../../../../../api/request';
 
-const postData = async (title: string, custom: { background: string }) => {
-  console.log('ok');
+const postData = async (title: string, custom: { background: string }): Promise<void> => {
   await api
     .post('/board', {
-      title: title,
-      custom: custom,
+      title,
+      custom,
     })
     .then(function (response) {
       console.log(response);

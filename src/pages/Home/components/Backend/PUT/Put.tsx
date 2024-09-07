@@ -1,10 +1,10 @@
 import api from '../../../../../api/request';
 
-const postData = async (id: number, title: string, color: string) => {
+const postData = async (id: number, title: string, color: string): Promise<void> => {
   console.log('ok2');
   await api
     .put(`/board/${id}`, {
-      title: title,
+      title,
       custom: { background: color },
     })
     .then(function (response) {

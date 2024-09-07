@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './ModalWindow.scss';
 import postData from '../../Backend/Post/post';
 import { checkTitle } from './FunctionForModalWindows/FunctionForModalWindows';
 
 interface ModalProps {
-  fetchData: Function;
-  setModalWindowsAdd: Function;
+  fetchData: () => void;
+  setModalWindowsAdd: (isOpen: boolean) => void;
 }
 
-const ModalWindows: React.FC<ModalProps> = ({ fetchData, setModalWindowsAdd }) => {
+function ModalWindows({ fetchData, setModalWindowsAdd }: ModalProps): JSX.Element {
   const [title, setTitle] = useState('');
   const [color, setColor] = useState('#ffffff');
   const [isError, setIsError] = useState(false);
 
-  const setBoardName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const setBoardName = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
   };
 
-  const setBoardColor = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const setBoardColor = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setColor(event.target.value);
   };
 
-  const stopPropagation = (event: React.MouseEvent) => {
+  const stopPropagation = (event: React.MouseEvent): void => {
     event.stopPropagation();
   };
 
-  const enter = async () => {
+  const enter = async (): Promise<void> => {
     if (checkTitle(title)) {
       setIsError(false);
       await postData(title, { background: color });
@@ -56,5 +56,5 @@ const ModalWindows: React.FC<ModalProps> = ({ fetchData, setModalWindowsAdd }) =
       <button onClick={enter}>Створити дошку</button>
     </div>
   );
-};
+}
 export default ModalWindows;

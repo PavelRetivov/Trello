@@ -1,10 +1,10 @@
 import api from '../../../../../../api/request';
 
 const postDataCards = async (
-  board_id: string,
-  data: { title: string; id: number; position: number; description: string; custom: any }
-) => {
-  const url = `/board/${board_id}/card`;
+  boardId: string,
+  data: { title: string; id: number; position: number; description: string; custom: string }
+): Promise<void> => {
+  const url = `/board/${boardId}/card`;
   console.log(url);
   console.log(data);
   console.log(data.id);

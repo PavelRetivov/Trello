@@ -1,11 +1,11 @@
 import api from '../../../../../api/request';
 
-const putData = async (id_border: string, id_list?: number, title?: string) => {
-  const url = id_list ? `/board/${id_border}/list/${id_list}` : `/board/${id_border}`;
+const putData = async (idBorder: string, idList?: number, title?: string): Promise<void> => {
+  const url = idList ? `/board/${idBorder}/list/${idList}` : `/board/${idBorder}`;
 
   await api
     .put(url, {
-      title: title,
+      title,
     })
     .then(function (response) {
       console.log(response);

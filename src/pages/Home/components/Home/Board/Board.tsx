@@ -1,22 +1,17 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './board.scss';
 import IData from '../../interface/IData';
-
-import { useState, useEffect, useRef } from 'react';
 
 interface BoardProps {
   board: IData;
 }
 
-const Board = ({ board }: BoardProps) => {
+function Board({ board }: BoardProps): JSX.Element {
   const [backgroundColor, setBackground] = useState<string>('#ffffff');
   const boardElement = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    textColor();
-  }, []);
-
-  const textColor = () => {
+  const textColor = (): void => {
     if (boardElement.current) {
       const style = window.getComputedStyle(boardElement.current);
       setBackground(style.background);
@@ -33,9 +28,13 @@ const Board = ({ board }: BoardProps) => {
     }
   };
 
+  useEffect(() => {
+    textColor();
+  }, []);
+
   return (
     <div className="board-style">
-      <Link to={'/board/' + board.id.toString()}>
+      <Link to={`/board/${board.id.toString()}`}>
         <div
           ref={boardElement}
           className="board-button"
@@ -46,6 +45,6 @@ const Board = ({ board }: BoardProps) => {
       </Link>
     </div>
   );
-};
+}
 
 export default Board;

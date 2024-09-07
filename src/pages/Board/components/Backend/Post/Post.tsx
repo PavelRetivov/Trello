@@ -1,12 +1,12 @@
 import api from '../../../../../api/request';
 
-const postData = async (id: string, title: string, position: number) => {
+const postData = async (id: string, title: string, position: number): Promise<void> => {
   console.log('ok');
   const url = `/board/${id}/list`;
   await api
     .post(url, {
-      title: title,
-      position: position,
+      title,
+      position,
     })
     .then(function (response) {
       console.log(response);

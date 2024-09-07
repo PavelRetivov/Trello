@@ -1,35 +1,34 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useState } from 'react';
 import './modalWindowsAdd.scss';
 import postData from '../../Backend/Post/Post';
 
 interface modalProps {
-  id_border: string;
-  setIsOpenModalWindows: Function;
-  getList: Function;
+  idBorder: string;
+  setIsOpenModalWindows: (isOpen: boolean) => void;
+  getList: () => void;
 }
 
-const ModalWindowsAdd = ({ id_border, setIsOpenModalWindows, getList }: modalProps) => {
+function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList }: modalProps): JSX.Element {
   const [title, setTitle] = useState('');
   const [count, setCount] = useState<number>();
 
-  const changeTitleText = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changeTitleText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
   };
 
-  const handleClick = (event: React.MouseEvent) => {
+  const handleClick = (event: React.MouseEvent): void => {
     event.stopPropagation();
   };
 
-  const changePriceText = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changePriceText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setCount(+event.target.value);
   };
 
-  const enter = async () => {
+  const enter = async (): Promise<void> => {
     setIsOpenModalWindows(false);
-    if (id_border !== 'error' && count) {
-      console.log(id_border, title);
-      await postData(id_border, title, count);
+    if (idBorder !== 'error' && count) {
+      console.log(idBorder, title);
+      await postData(idBorder, title, count);
     }
     getList();
   };
@@ -41,6 +40,6 @@ const ModalWindowsAdd = ({ id_border, setIsOpenModalWindows, getList }: modalPro
       <button onClick={enter}>Enter</button>
     </div>
   );
-};
+}
 
 export default ModalWindowsAdd;

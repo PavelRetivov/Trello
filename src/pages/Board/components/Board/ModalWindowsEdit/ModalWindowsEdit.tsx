@@ -1,35 +1,35 @@
-import { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import putData from '../../Backend/PUT/Put';
 
 interface modalProps {
   configBoard:
     | undefined
     | {
-        title: string;
-        board_id: string;
+        titleNew: string;
+        boardIdNew: string;
         id: number;
       };
-  setIsOpenModalEdit: Function;
-  getList: Function;
+  setIsOpenModalEdit: (isOpen: boolean) => void;
+  getList: () => void;
 }
 
-const ModalWindowsEdit = ({ setIsOpenModalEdit, configBoard, getList }: modalProps) => {
+function ModalWindowsEdit({ setIsOpenModalEdit, configBoard, getList }: modalProps): JSX.Element {
   const [text, setText] = useState('');
 
-  const handClick = (event: React.MouseEvent) => {
+  const handClick = (event: React.MouseEvent): void => {
     event.stopPropagation();
   };
   useEffect(() => {
-    if (configBoard) setText(configBoard.title);
-  }, []);
+    if (configBoard) setText(configBoard.titleNew);
+  }, [configBoard]);
 
-  const inputText = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const inputText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     console.log('text');
     setText(event.target.value);
   };
-  const enter = async () => {
+  const enter = async (): Promise<void> => {
     if (configBoard) {
-      await putData(configBoard.board_id, configBoard.id, text);
+      await putData(configBoard.boardIdNew, configBoard.id, text);
       getList();
     }
     setIsOpenModalEdit(false);
@@ -41,6 +41,6 @@ const ModalWindowsEdit = ({ setIsOpenModalEdit, configBoard, getList }: modalPro
       <button onClick={enter}>Enter</button>
     </div>
   );
-};
+}
 
 export default ModalWindowsEdit;

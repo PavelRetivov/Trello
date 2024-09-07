@@ -1,7 +1,7 @@
 import api from '../../../../../api/request';
 
-const Delete = async (id_border: string, id_list: number) => {
-  const url = `/board/${id_border}/list/${id_list}`;
+const Delete = async (idBorder: string, idList: number): Promise<void> => {
+  const url = `/board/${idBorder}/list/${idList}`;
   await api.delete(url);
 };
 

@@ -1,7 +1,5 @@
-export const checkTitle = (text: string) => {
+export const checkTitle = (text: string): boolean => {
   const trimText = text.trim();
-  console.log(trimText);
-  const regex = /^[a-zA-Zа-яА-ЯіІїЇєЄґҐ\-\.\_\s]+$/;
-  console.log(regex.test(trimText));
+  const regex = /^[a-zA-Zа-яА-ЯіІїЇєЄґҐ\-._\s]+$/;
   return regex.test(trimText);
 };

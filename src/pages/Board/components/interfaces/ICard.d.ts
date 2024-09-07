@@ -3,6 +3,6 @@ interface ICard {
   id: number;
   position: number;
   description: string;
-  custom: any;
+  custom: string;
 }
 export default ICard;

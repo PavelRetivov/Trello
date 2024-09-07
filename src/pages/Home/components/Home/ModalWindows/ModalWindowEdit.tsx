@@ -5,13 +5,13 @@ import { checkTitle } from './FunctionForModalWindows/FunctionForModalWindows';
 
 interface ModalProps {
   id: number | undefined;
-  updateData: Function;
-  setModalWindowsEdition: Function;
+  updateData: () => void;
+  setModalWindowsEdition: (isOpen: boolean) => void;
   titleProps: string | undefined;
-  customProps: any;
+  customProps: object | undefined;
 }
 
-const ModalWindowEdit = ({ id, updateData, setModalWindowsEdition, titleProps, customProps }: ModalProps) => {
+function ModalWindowEdit({ id, updateData, setModalWindowsEdition, titleProps, customProps }: ModalProps): JSX.Element {
   const [valueText, setValueText] = useState('');
   const [color, setColor] = useState('');
   const [isError, setIsError] = useState(false);
@@ -25,20 +25,19 @@ const ModalWindowEdit = ({ id, updateData, setModalWindowsEdition, titleProps, c
       typeof customProps.background === 'string'
     )
       setColor(customProps.background);
-  }, []);
+  }, [titleProps, customProps]);
 
-  const stopPropagation = (event: React.MouseEvent) => {
+  const stopPropagation = (event: React.MouseEvent): void => {
     event.stopPropagation();
   };
-  const setBoardName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const setBoardName = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setValueText(event.target.value);
   };
-  const setBoardColor = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const setBoardColor = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setColor(event.target.value);
   };
 
-  const enter = async () => {
-    console.log(valueText);
+  const enter = async (): Promise<void> => {
     if (id && checkTitle(valueText)) {
       setIsError(false);
       await putData(id, valueText, color);
@@ -63,6 +62,6 @@ const ModalWindowEdit = ({ id, updateData, setModalWindowsEdition, titleProps, c
       <button onClick={enter}>Редагувати</button>
     </div>
   );
-};
+}
 
 export default React.memo(ModalWindowEdit);

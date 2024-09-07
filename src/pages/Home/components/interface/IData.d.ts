@@ -1,6 +1,6 @@
 interface IData {
   id: number;
   title: string;
-  custom: any;
+  custom: { background: string };
 }
 export default IData;

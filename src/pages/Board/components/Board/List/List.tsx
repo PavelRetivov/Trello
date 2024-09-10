@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './list.scss';
 import IList from '../../interfaces/IList';
 import postDataCards from './PostDataCard/PostDataCards';
@@ -12,7 +12,7 @@ function List({ cards, id, boardId, getList, setIsOpenModalWindowsAddCards }: IL
   const [lastIsOpen, setLastIsOpen] = useState(false);
   const [dataCard, setDataCard] = useState<ICard | undefined>();
   const [card, setCard] = useState<ICard[]>();
-
+  const isFirstRender = useRef(true);
   /// ///////////////////
 
   /* How this working?
@@ -22,29 +22,30 @@ function List({ cards, id, boardId, getList, setIsOpenModalWindowsAddCards }: IL
   3.whet data update call function getList which update data in board, and we get new cards.
   */
 
-  useEffect(() => {
-    console.log('sdsd');
-  }, []);
-
-  const postList = async (): Promise<void> => {
+  const postList = useCallback(async (): Promise<void> => {
     if (boardId && dataCard !== undefined) {
       await postDataCards(boardId, dataCard);
     }
-  };
+  }, [dataCard, boardId]);
 
   useEffect(() => {
     if (Array.isArray(cards)) {
       setCard(cards);
     }
   }, [cards]);
-  const uploadCards = async (): Promise<void> => {
+
+  const uploadCards = useCallback(async (): Promise<void> => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     await postList();
-    getList();
-  };
+    getList('setList');
+  }, [getList, postList]);
 
   useEffect(() => {
     uploadCards();
-  }, [dataCard]);
+  }, [uploadCards]);
 
   /// //////////////////////
 

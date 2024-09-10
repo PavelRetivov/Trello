@@ -6,7 +6,7 @@ import api from '../../../../../../api/request';
 interface CardProps {
   props: ICard;
   boardId: string | undefined;
-  getList: () => void;
+  getList: (request: string) => void;
 }
 
 function Card({ props, boardId, getList }: CardProps): JSX.Element {
@@ -15,7 +15,7 @@ function Card({ props, boardId, getList }: CardProps): JSX.Element {
   const deleteCard = async (): Promise<void> => {
     const url = `/board/${boardId}/card/${boardId}`;
     await api.delete(url);
-    getList();
+    getList('setList');
   };
 
   return (

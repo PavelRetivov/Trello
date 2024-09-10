@@ -5,12 +5,12 @@ import postData from '../../Backend/Post/Post';
 interface modalProps {
   idBorder: string;
   setIsOpenModalWindows: (isOpen: boolean) => void;
-  getList: () => void;
+  getList: (request: string) => void;
+  listLength: number;
 }
 
-function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList }: modalProps): JSX.Element {
+function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList, listLength }: modalProps): JSX.Element {
   const [title, setTitle] = useState('');
-  const [count, setCount] = useState<number>();
 
   const changeTitleText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
@@ -20,23 +20,18 @@ function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList }: modalProp
     event.stopPropagation();
   };
 
-  const changePriceText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setCount(+event.target.value);
-  };
-
   const enter = async (): Promise<void> => {
     setIsOpenModalWindows(false);
-    if (idBorder !== 'error' && count) {
+    if (idBorder !== 'error') {
       console.log(idBorder, title);
-      await postData(idBorder, title, count);
+      await postData(idBorder, title, listLength);
     }
-    getList();
+    getList('setList');
   };
 
   return (
     <div className="modalWindowsAdd" onClick={handleClick}>
       <input type="text" value={title} onChange={changeTitleText} />
-      <input type="number" name="" value={count} id="" onChange={changePriceText} />
       <button onClick={enter}>Enter</button>
     </div>
   );

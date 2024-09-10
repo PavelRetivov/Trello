@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import List from './List/List';
 import ICard from '../interfaces/ICard';
@@ -9,12 +9,14 @@ import ModalWindowsAdd from './modalWindowsIsAdd/ModalWindowsAdd';
 import ModalWindowEdit from './ModalWindowsEdit/ModalWindowsEdit';
 import Delete from '../Backend/Delete/Delete';
 import putData from '../Backend/PUT/Put';
+import UpdatePositionBoard from './UpdatePositionBoard';
 
 function Board(): JSX.Element {
   const { boardId } = useParams();
   const [title, setTitle] = useState('');
   const [isInputTitle, setIsInputTitle] = useState(false);
   const [list, setList] = useState<interfaceList[]>();
+  const [backgroundColor, setBackgroundColor] = useState('');
   const [boardConfig, setBoardConfig] = useState<
     | {
         titleNew: string;
@@ -51,27 +53,57 @@ function Board(): JSX.Element {
   }, [position]);
 
   // take data Title and List if they have
-  const getList = async (): Promise<void> => {
-    const data = boardId ? await getData(boardId) : undefined;
-    console.log(boardId);
-    if (
-      data &&
-      'lists' in data &&
-      data.lists &&
-      Array.isArray(data.lists) &&
-      'title' in data &&
-      typeof data.title === 'string'
-    ) {
-      console.log(data);
-      setList(data.lists);
-      setTitle(data.title);
-    }
-  };
+  const getList = useCallback(
+    async (request: string): Promise<void> => {
+      const data = boardId ? await getData(boardId) : undefined;
+      console.log(`request: ${request}`);
+      if (data) {
+        switch (request) {
+          case 'setList':
+            if ('lists' in data && data.lists && Array.isArray(data.lists)) {
+              setList(data.lists);
+              console.log(data.lists);
+              console.log('setList');
+            }
+            break;
+          case 'setTitle':
+            if ('title' in data && typeof data.title === 'string') {
+              setTitle(data.title);
+              console.log('setTitle');
+            }
+            break;
+          case 'onlyData':
+            if (
+              'lists' in data &&
+              data.lists &&
+              Array.isArray(data.lists) &&
+              'title' in data &&
+              typeof data.title === 'string' &&
+              'custom' in data &&
+              typeof data.custom === 'object' &&
+              data.custom &&
+              'background' in data.custom &&
+              typeof data.custom.background === 'string'
+            ) {
+              setList(data.lists);
+              setTitle(data.title);
+              setBackgroundColor(data.custom.background);
+              console.log(data.lists);
+            }
+            break;
+          default:
+            console.log('Error 404');
+        }
+      }
+    },
+    [boardId]
+  );
 
   // function for update information when update data
   useEffect(() => {
-    getList();
-  }, [boardId]);
+    console.log('start');
+    getList('onlyData');
+  }, [getList]);
 
   const openModalWindows = (): void => {
     setIsOpenModalWindowsAdd(true);
@@ -99,16 +131,35 @@ function Board(): JSX.Element {
     setIsOpenModalWindowsEdit(true);
   };
 
+  // logic update position board
+  const updatePosition = async (id: number): Promise<void> => {
+    const updateList = list?.filter((value) => value.id !== id);
+    const deleteListPosition = list?.filter((value) => value.id === id)[0].position;
+
+    if (updateList && boardId) {
+      const newList = await Promise.all(
+        updateList.map(async (value, index) => ({
+          id: value.id,
+          position: index,
+        }))
+      );
+      console.log('ok');
+      if (deleteListPosition !== undefined) {
+        const nedUpdateList = newList.slice(deleteListPosition);
+        if (nedUpdateList.length > 0) {
+          await UpdatePositionBoard({ idBoard: boardId, data: nedUpdateList });
+        }
+      }
+    }
+  };
+  // delete board by id and update position board
   const deleteListById = async (boarId: string | undefined, idlList: number): Promise<void> => {
     if (boarId) {
       await Delete(boarId, idlList);
-      getList();
+      await updatePosition(idlList);
+      await getList('setList');
     }
   };
-
-  /* setting title edit, when you edit title(name head board) you can edit this method enter 
-  and click mouse, this is regulated two function enterInputTitle and offPointerEvents
-  */
 
   // control edit by click mouse
   const offPointerEvents = async (): Promise<void> => {
@@ -166,7 +217,7 @@ function Board(): JSX.Element {
             />
           </div>
         </div>
-        <div className="border">
+        <div className="border" style={{ background: backgroundColor }}>
           {list
             ? list
                 .sort((a, b) => a.position - b.position)
@@ -201,11 +252,12 @@ function Board(): JSX.Element {
         </div>
       </div>
       {isOpenModalWindowsAdd ? (
-        <div className="modalWindows" style={{ top: modalPosition.height, left: modalPosition.width }}>
+        <div className="modalWindowsBoardList" style={{ top: modalPosition.height, left: modalPosition.width }}>
           <ModalWindowsAdd
             idBorder={boardId || 'error'}
             setIsOpenModalWindows={setIsOpenModalWindowsAdd}
             getList={getList}
+            listLength={list ? list.length : 0}
           />
         </div>
       ) : null}

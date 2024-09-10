@@ -4,7 +4,7 @@ interface List {
   title: string;
   position: number;
   boardId: string | undefined;
-  getList: () => void;
+  getList: (request: string) => void;
   setIsOpenModalWindowsAddCards: (isOpen: boolean) => void;
 }
 

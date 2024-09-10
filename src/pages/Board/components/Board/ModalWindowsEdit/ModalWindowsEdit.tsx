@@ -10,11 +10,12 @@ interface modalProps {
         id: number;
       };
   setIsOpenModalEdit: (isOpen: boolean) => void;
-  getList: () => void;
+  getList: (request: string) => void;
 }
 
 function ModalWindowsEdit({ setIsOpenModalEdit, configBoard, getList }: modalProps): JSX.Element {
   const [text, setText] = useState('');
+  console.log('edit');
 
   const handClick = (event: React.MouseEvent): void => {
     event.stopPropagation();
@@ -30,7 +31,7 @@ function ModalWindowsEdit({ setIsOpenModalEdit, configBoard, getList }: modalPro
   const enter = async (): Promise<void> => {
     if (configBoard) {
       await putData(configBoard.boardIdNew, configBoard.id, text);
-      getList();
+      getList('setList');
     }
     setIsOpenModalEdit(false);
   };

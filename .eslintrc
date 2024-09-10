@@ -59,7 +59,7 @@
     "semi": "error",
     "no-console": "warn",
     "import/extensions": [
-      "warn", // Рівень серйозності: 0 - off, 1 - warn, 2 - error
+      "off", // Рівень серйозності: 0 - off, 1 - warn, 2 - error
       "ignorePackages",
       {
         "js": "never",
@@ -68,7 +68,7 @@
         "tsx": "never"
       }
     ],
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "error"
   },
  
   

@@ -1,6 +1,14 @@
 @import '../../../style/variables.scss';
 @import '../../../style/mixins.scss';
 @import url($url-text-input-h1);
+@import url($url-text-area);
+
+@mixin inputTitle {
+  border: none;
+  background: none;
+  box-shadow: none;
+  outline: none;
+}
 
 .container {
   min-height: 100vh;
@@ -69,10 +77,7 @@
   @include modalWindowsBoardList;
 }
 .textTitle {
-  border: none;
-  background: none;
-  box-shadow: none;
-  outline: none;
+  @include inputTitle;
   font-size: 50px;
   position: absolute;
   left: 300px;
@@ -81,6 +86,19 @@
   font-family: 'Rubik Doodle Shadow', system-ui;
   font-weight: 400;
   font-style: normal;
+}
+.textTitleBoard {
+  @include inputTitle;
+  display: block;
+  width: 135px;
+  box-sizing: border-box;
+  overflow: hidden;
+  resize: none;
+  margin-left: 10px;
+  font-family: 'Rubik Wet Paint', system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 27px;
 }
 .head-position {
   display: flex;

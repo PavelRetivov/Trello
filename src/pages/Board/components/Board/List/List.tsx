@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import TextareaAutoSize from 'react-textarea-autosize';
+import PutNewTitle from './PutNewTitle/PutNewTitle';
 import './list.scss';
 import IList from '../../interfaces/IList';
 import postDataCards from './PostDataCard/PostDataCards';
@@ -7,12 +9,24 @@ import ModalWindowsAdd from './ModalWindowsAdd/ModalWindowsAdd';
 import './ModalWindowsAdd/ModalWindowsAdd.scss';
 import Card from './Card/Card';
 
-function List({ cards, id, boardId, getList, setIsOpenModalWindowsAddCards }: IList): JSX.Element {
+function List({
+  cards,
+  id,
+  boardId,
+  getList,
+  setIsOpenModalWindowsAddCards,
+  title,
+  deleteBoardById,
+  setIsInputTitle,
+}: IList): JSX.Element {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [lastIsOpen, setLastIsOpen] = useState(false);
   const [dataCard, setDataCard] = useState<ICard | undefined>();
   const [card, setCard] = useState<ICard[]>();
+  const [textAreaValue, setTextAreaValue] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const isFirstRender = useRef(true);
+  let enterPresent = false;
   /// ///////////////////
 
   /* How this working?
@@ -27,7 +41,9 @@ function List({ cards, id, boardId, getList, setIsOpenModalWindowsAddCards }: IL
       await postDataCards(boardId, dataCard);
     }
   }, [dataCard, boardId]);
-
+  useEffect(() => {
+    setTextAreaValue(title);
+  }, [title]);
   useEffect(() => {
     if (Array.isArray(cards)) {
       setCard(cards);
@@ -68,10 +84,61 @@ function List({ cards, id, boardId, getList, setIsOpenModalWindowsAddCards }: IL
     setIsOpenModal(true);
     setIsOpenModalWindowsAddCards(true);
   };
+  const editTitleBoard = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    setTextAreaValue(event.target.value);
+  };
+  const textAreaFocus = (): void => {
+    if (textareaRef.current) {
+      setIsInputTitle(true);
+      textareaRef.current.focus();
+    }
+  };
+  const onEditTitle = (): void => {
+    setIsInputTitle(true);
+  };
+  const enterInputTitle = async (event: React.KeyboardEvent): Promise<void> => {
+    if (event.key === 'Enter') {
+      enterPresent = true;
+      if (boardId) await PutNewTitle(boardId, id, textAreaValue);
+      if (textareaRef.current) textareaRef.current.blur();
+      setIsInputTitle(false);
+    }
+  };
+
+  const offPointerEvents = async (): Promise<void> => {
+    if (enterPresent) {
+      enterPresent = false;
+      return;
+    }
+    if (boardId) await PutNewTitle(boardId, id, textAreaValue);
+    if (textareaRef.current) textareaRef.current.blur();
+    setIsInputTitle(false);
+  };
 
   return (
     <div>
       <div>
+        <div className="head-position">
+          <div>
+            <TextareaAutoSize
+              ref={textareaRef}
+              className="textTitleBoard"
+              value={textAreaValue}
+              onChange={editTitleBoard}
+              onClick={onEditTitle}
+              onBlur={offPointerEvents}
+              onKeyDown={enterInputTitle}
+              minRows={1}
+              id="titleAreaText"
+            />
+          </div>
+          <div className="button-position">
+            <button onClick={() => deleteBoardById(id)}>X</button>
+            <label htmlFor="titleAreaText">
+              <button onClick={textAreaFocus}>Edit</button>
+            </label>
+          </div>
+        </div>
         <div>
           <div className="list-ul">
             <ul>

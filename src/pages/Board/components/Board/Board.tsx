@@ -6,7 +6,6 @@ import './border.scss';
 import getData from '../Backend/Get/Get';
 import interfaceList from '../interfaces/IList';
 import ModalWindowsAdd from './modalWindowsIsAdd/ModalWindowsAdd';
-import ModalWindowEdit from './ModalWindowsEdit/ModalWindowsEdit';
 import Delete from '../Backend/Delete/Delete';
 import putData from '../Backend/PUT/Put';
 import UpdatePositionBoard from './UpdatePositionBoard';
@@ -17,15 +16,6 @@ function Board(): JSX.Element {
   const [isInputTitle, setIsInputTitle] = useState(false);
   const [list, setList] = useState<interfaceList[]>();
   const [backgroundColor, setBackgroundColor] = useState('');
-  const [boardConfig, setBoardConfig] = useState<
-    | {
-        titleNew: string;
-        boardIdNew: string;
-        id: number;
-      }
-    | undefined
-  >(undefined);
-
   const [isOpenModalWindowsAdd, setIsOpenModalWindowsAdd] = useState(false);
   const [isOpenModalWindowsEdit, setIsOpenModalWindowsEdit] = useState(false);
   const [position, setPosition] = useState({
@@ -33,11 +23,6 @@ function Board(): JSX.Element {
     height: window.innerHeight,
   });
   const [isOpenModalWindowsAddCards, setIsOpenModalWindowsAddCards] = useState(false);
-
-  const modalPosition = {
-    width: position.width / 2 - 100,
-    height: position.height / 2 - 150,
-  };
   let enterPresent = false;
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -126,11 +111,6 @@ function Board(): JSX.Element {
     };
   }, [isOpenModalWindowsAdd, isOpenModalWindowsEdit]);
 
-  const openModalWindowsEdit = (titleNew: string, boardIdNew: string | undefined, id: number): void => {
-    if (boardIdNew) setBoardConfig({ titleNew, boardIdNew, id });
-    setIsOpenModalWindowsEdit(true);
-  };
-
   // logic update position board
   const updatePosition = async (id: number): Promise<void> => {
     const updateList = list?.filter((value) => value.id !== id);
@@ -153,9 +133,9 @@ function Board(): JSX.Element {
     }
   };
   // delete board by id and update position board
-  const deleteListById = async (boarId: string | undefined, idlList: number): Promise<void> => {
-    if (boarId) {
-      await Delete(boarId, idlList);
+  const deleteListById = async (idlList: number): Promise<void> => {
+    if (boardId) {
+      await Delete(boardId, idlList);
       await updatePosition(idlList);
       await getList('setList');
     }
@@ -225,47 +205,38 @@ function Board(): JSX.Element {
                   return (
                     <div key={card.id}>
                       <div className="list">
-                        <div className="head-position">
-                          <h1>{card.title}</h1>
-                          <div className="button-position">
-                            <button onClick={() => deleteListById(boardId, card.id)}>X</button>
-                            <button onClick={() => openModalWindowsEdit(card.title, boardId, card.id)}>Edit</button>
-                          </div>
-                        </div>
                         <List
                           boardId={boardId}
                           title={card.title}
                           cards={card.cards as ICard[]}
                           id={card.id}
                           position={card.position}
+                          setIsInputTitle={setIsInputTitle}
                           getList={getList}
                           setIsOpenModalWindowsAddCards={setIsOpenModalWindowsAddCards}
+                          deleteBoardById={deleteListById}
                         />
                       </div>
                     </div>
                   );
                 })
             : null}
-          <button className="buttonAdd" onClick={openModalWindows}>
-            Додати дошку
-          </button>
+          {!isOpenModalWindowsAdd ? (
+            <button className="buttonAdd" onClick={openModalWindows}>
+              Додати дошку
+            </button>
+          ) : (
+            <div className="" style={{ pointerEvents: 'auto' }}>
+              <ModalWindowsAdd
+                idBorder={boardId || 'error'}
+                setIsOpenModalWindows={setIsOpenModalWindowsAdd}
+                getList={getList}
+                listLength={list ? list.length : 0}
+              />
+            </div>
+          )}
         </div>
       </div>
-      {isOpenModalWindowsAdd ? (
-        <div className="modalWindowsBoardList" style={{ top: modalPosition.height, left: modalPosition.width }}>
-          <ModalWindowsAdd
-            idBorder={boardId || 'error'}
-            setIsOpenModalWindows={setIsOpenModalWindowsAdd}
-            getList={getList}
-            listLength={list ? list.length : 0}
-          />
-        </div>
-      ) : null}
-      {isOpenModalWindowsEdit ? (
-        <div className="modalWindows" style={{ top: modalPosition.height, left: modalPosition.width }}>
-          <ModalWindowEdit configBoard={boardConfig} setIsOpenModalEdit={setIsOpenModalWindowsEdit} getList={getList} />
-        </div>
-      ) : null}
     </div>
   );
 }

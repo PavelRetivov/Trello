@@ -3,4 +3,44 @@
 
 .modalWindowsAdd {
   @include modal-window;
+  height: 50px;
+  input {
+    width: 80%;
+    height: 30%;
+  }
+  input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 3px;
+    outline: none;
+  }
+  .positionButton {
+    display: flex;
+    width: 80%;
+    flex-direction: row;
+    height: 30%;
+    justify-content: flex-start;
+    gap: 10px;
+    button {
+      height: 100%;
+      background-color: #caabe3;
+      border: 2px solid blue;
+      border-radius: 5px;
+    }
+    button:hover {
+      box-shadow: 0 0 3px;
+      border-color: #cc7a7b;
+      background: #cabdcc;
+    }
+  }
+}
+.modalWindowsAdd.expend {
+  animation: expandHeight 0.15s forwards;
+}
+@keyframes expandHeight {
+  from {
+    height: 50px;
+  }
+  to {
+    height: 100px;
+  }
 }

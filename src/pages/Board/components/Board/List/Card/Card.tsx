@@ -17,12 +17,14 @@ function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Elem
   const { id, title, listId } = props;
   const [textAreaValue, setTextAreaValue] = useState('');
   const testAreaRef = useRef<HTMLTextAreaElement>(null);
-  let enterPresent = false;
+  const [enterPresent, setEnterPresent] = useState(false);
 
+  // set on textAreaValue title
   useEffect(() => {
     setTextAreaValue(title);
   }, [title]);
 
+  // delete cards
   const deleteCard = async (): Promise<void> => {
     const url = `/board/${boardId}/card/${id}`;
     await api.delete(url);
@@ -40,9 +42,11 @@ function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Elem
     setIsInputTitle(true);
   };
 
+  // when edit by keyboard enter this set enterPresent false and return, but
+  // if edit by click mouse another place edit data and off edit title
   const offPointerEvents = async (): Promise<void> => {
     if (enterPresent) {
-      enterPresent = false;
+      setEnterPresent(false);
       return;
     }
     if (boardId) await PutNewTitleCards({ idBoard: boardId, cardId: id, listId, title: textAreaValue });
@@ -50,10 +54,11 @@ function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Elem
     setIsInputTitle(false);
   };
 
+  // edit title when click keyboard enter
   const enterInputTitle = async (event: React.KeyboardEvent): Promise<void> => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      enterPresent = true;
+      setEnterPresent(true);
       if (boardId) await PutNewTitleCards({ idBoard: boardId, cardId: id, listId, title: textAreaValue });
       if (testAreaRef.current) testAreaRef.current.blur();
       setIsInputTitle(false);

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './ModalWindowsAdd.scss';
+import { checkTitle } from '../../checkValidTitle/CheckValidTitle';
 
 interface modalProps {
   setData: (data: { title: string; id: number; position: number }) => void;
@@ -17,31 +18,36 @@ function ModalWindowsAdd({
   setIsOpenModalWindowsAddCards,
 }: modalProps): JSX.Element {
   const [title, setTitle] = useState('');
-  const [cardId, setCardId] = useState<number>();
   const addDivRef = useRef<HTMLDivElement | null>(null);
+  const [checkIsError, setCheckIsError] = useState(false);
 
+  // enter add new board
   const enter = (): void => {
-    if (cardId) {
-      setData({ title, id: cardId, position: cardLength });
+    if (checkTitle(title)) {
+      console.log(title);
+      setData({ title, id: listId, position: cardLength });
       setIsModalWindows(false);
       setIsOpenModalWindowsAddCards(false);
+    } else {
+      setCheckIsError(true);
     }
   };
-  useEffect(() => {
-    setCardId(listId);
-  }, [listId]);
+
   const stopPropagation = (event: React.MouseEvent): void => {
     event.stopPropagation();
   };
 
+  // set title text
   const titleText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
   };
+
   const closeModalWindows = (): void => {
     setIsModalWindows(false);
     setIsOpenModalWindowsAddCards(false);
   };
 
+  // add animation when open modal windows
   useEffect(() => {
     if (addDivRef.current) {
       addDivRef.current.style.animation = 'expandHeightCards 0.3s forwards';
@@ -51,6 +57,11 @@ function ModalWindowsAdd({
   return (
     <div onClick={stopPropagation} ref={addDivRef} className="modalPositionCardsAdd" style={{ pointerEvents: 'auto' }}>
       <input type="text" value={title} onChange={titleText} placeholder="Введіть назву картки" />
+      {checkIsError ? (
+        <div>
+          <p style={{ color: 'black', fontSize: '10px', padding: 0, margin: 0 }}>ви ввели не коректні данні</p>
+        </div>
+      ) : null}
       <div className="positionButtonCardsAdd ">
         <button onClick={enter} className="enterCards">
           Enter

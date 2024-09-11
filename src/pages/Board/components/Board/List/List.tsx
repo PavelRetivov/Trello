@@ -8,6 +8,7 @@ import ICard from '../../interfaces/ICard';
 import ModalWindowsAdd from './ModalWindowsAdd/ModalWindowsAdd';
 import './ModalWindowsAdd/ModalWindowsAdd.scss';
 import Card from './Card/Card';
+import { checkTitle } from '../checkValidTitle/CheckValidTitle';
 
 function List({
   cards,
@@ -24,10 +25,12 @@ function List({
   const [dataCard, setDataCard] = useState<{ title: string; id: number; position: number } | undefined>();
   const [card, setCard] = useState<ICard[]>();
   const [textAreaValue, setTextAreaValue] = useState('');
+  const [previousTitle, setPreviousTitle] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const isFirstRender = useRef(true);
   const [listId] = useState<number>(id);
-  let enterPresent = false;
+  const [enterPresent, setEnterPresent] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   /// ///////////////////
 
@@ -45,6 +48,7 @@ function List({
   }, [dataCard, boardId]);
   useEffect(() => {
     setTextAreaValue(title);
+    setPreviousTitle(title);
   }, [title]);
   useEffect(() => {
     if (Array.isArray(cards)) {
@@ -67,6 +71,7 @@ function List({
 
   /// //////////////////////
 
+  // close modal windows when click mouse another place
   useEffect(() => {
     const closeModal = (): void => {
       if (isOpenModal && lastIsOpen) {
@@ -82,39 +87,71 @@ function List({
     };
   }, [isOpenModal, lastIsOpen, setIsOpenModalWindowsAddCards]);
 
+  // open modal windows
   const openModalWindows = (): void => {
     setIsOpenModal(true);
     setIsOpenModalWindowsAddCards(true);
   };
+
+  // edit title board
   const editTitleBoard = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setTextAreaValue(event.target.value);
   };
+
+  // focus textarea when  click edit
   const textAreaFocus = (): void => {
     if (textareaRef.current) {
       setIsInputTitle(true);
       textareaRef.current.focus();
     }
   };
+
+  // no comment ^) becaus name all say
   const onEditTitle = (): void => {
     setIsInputTitle(true);
   };
+
+  // edit title when click keyboard enter
   const enterInputTitle = async (event: React.KeyboardEvent): Promise<void> => {
     if (event.key === 'Enter') {
-      enterPresent = true;
-      if (boardId) await PutNewTitle(boardId, listId, textAreaValue);
-      if (textareaRef.current) textareaRef.current.blur();
-      setIsInputTitle(false);
+      event.preventDefault();
+      if (checkTitle(textAreaValue)) {
+        setEnterPresent(true);
+        if (boardId) await PutNewTitle(boardId, listId, textAreaValue);
+        if (textareaRef.current) textareaRef.current.blur();
+        setIsInputTitle(false);
+        setIsError(false);
+        setPreviousTitle(textAreaValue);
+      } else {
+        setTextAreaValue(previousTitle);
+        setIsInputTitle(false);
+        setIsError(true);
+      }
     }
   };
 
+  // when edit by keyboard enter this set enterPresent false and return, but
+  // if edit by click mouse another place edit data and off edit title
   const offPointerEvents = async (): Promise<void> => {
     if (enterPresent) {
-      enterPresent = false;
+      setEnterPresent(false);
       return;
     }
-    if (boardId) await PutNewTitle(boardId, listId, textAreaValue);
-    if (textareaRef.current) textareaRef.current.blur();
-    setIsInputTitle(false);
+    if (checkTitle(textAreaValue)) {
+      if (boardId) {
+        await PutNewTitle(boardId, listId, textAreaValue);
+      }
+      if (textareaRef.current) {
+        textareaRef.current.blur();
+      }
+      setIsInputTitle(false);
+      setIsError(false);
+      setPreviousTitle(textAreaValue);
+    } else {
+      setTextAreaValue(previousTitle);
+      setIsInputTitle(false);
+      setIsError(true);
+    }
   };
 
   // logic update position board
@@ -158,6 +195,11 @@ function List({
               minRows={1}
               id="titleAreaText"
             />
+            {isError ? (
+              <div>
+                <p style={{ color: 'red', fontSize: '10px', padding: 0, margin: 0 }}>ці вікно не можн бути пустим</p>
+              </div>
+            ) : null}
           </div>
           <div className="button-position">
             <button onClick={() => deleteBoardById(listId)}>X</button>

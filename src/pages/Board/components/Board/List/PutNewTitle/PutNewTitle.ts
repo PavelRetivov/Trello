@@ -3,10 +3,10 @@ import api from '../../../../../../api/request';
 const PutNewTitle = async (boardId: string, id: number, title: string): Promise<void> => {
   const ulr = `/board/${boardId}/list/${id}`;
 
-  const requaest = api.put(ulr, {
+  const request = api.put(ulr, {
     title,
   });
-  console.log(requaest);
+  console.log(request);
 };
 
 export default PutNewTitle;

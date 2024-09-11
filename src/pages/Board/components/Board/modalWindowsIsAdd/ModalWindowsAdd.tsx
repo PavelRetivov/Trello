@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './modalWindowsAdd.scss';
 import postData from '../../Backend/Post/Post';
+import { checkTitle } from '../checkValidTitle/CheckValidTitle';
 
 interface modalProps {
   idBorder: string;
@@ -12,26 +13,39 @@ interface modalProps {
 function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList, listLength }: modalProps): JSX.Element {
   const [title, setTitle] = useState('');
   const addDivRef = useRef<HTMLDivElement | null>(null);
+  const [isError, setIsError] = useState(false);
 
+  // set title text
   const changeTitleText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
   };
 
+  // stop propagation
   const handleClick = (event: React.MouseEvent): void => {
     event.stopPropagation();
   };
 
+  // add data on database
   const enter = async (): Promise<void> => {
-    setIsOpenModalWindows(false);
-    if (idBorder !== 'error') {
-      console.log(idBorder, title);
-      await postData(idBorder, title, listLength);
+    if (checkTitle(title)) {
+      setIsOpenModalWindows(false);
+      if (idBorder !== 'error') {
+        console.log(idBorder, title);
+        await postData(idBorder, title, listLength);
+      }
+      setIsError(false);
+      getList('setList');
+    } else {
+      setIsError(true);
     }
-    getList('setList');
   };
+
+  // close modal windows
   const closeModalWindows = (): void => {
     setIsOpenModalWindows(false);
   };
+
+  // on animation when open modal windows
   useEffect(() => {
     if (addDivRef.current) {
       addDivRef.current.style.animation = 'expandHeight 0.15s forwards';
@@ -41,6 +55,9 @@ function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList, listLength 
   return (
     <div className="modalWindowsAdd" ref={addDivRef} onClick={handleClick}>
       <input type="text" value={title} onChange={changeTitleText} placeholder="Введіть назву дошки" />
+      {isError ? (
+        <p style={{ color: 'red', fontSize: '10px', padding: 0, margin: 0 }}>Ви ввели не коректні дані</p>
+      ) : null}
       <div className="positionButton">
         <button onClick={enter}>Додати дошку</button>
         <button onClick={closeModalWindows}>X</button>

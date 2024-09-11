@@ -8,7 +8,7 @@ import interfaceList from '../interfaces/IList';
 import ModalWindowsAdd from './modalWindowsIsAdd/ModalWindowsAdd';
 import Delete from '../Backend/Delete/Delete';
 import putData from '../Backend/PUT/Put';
-import UpdatePositionBoard from './UpdatePositionBoard';
+import UpdatePositionBoard from './UpdatePositionBoard/UpdatePositionBoard';
 
 function Board(): JSX.Element {
   const { boardId } = useParams();
@@ -23,7 +23,7 @@ function Board(): JSX.Element {
     height: window.innerHeight,
   });
   const [isOpenModalWindowsAddCards, setIsOpenModalWindowsAddCards] = useState(false);
-  let enterPresent = false;
+  const [enterPresent, setEnterPresent] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // resize position modalWindows when change size windows
@@ -144,7 +144,7 @@ function Board(): JSX.Element {
   // control edit by click mouse
   const offPointerEvents = async (): Promise<void> => {
     if (enterPresent) {
-      enterPresent = false;
+      setEnterPresent(false);
       return;
     }
     if (boardId) await putData(boardId, undefined, title);
@@ -155,7 +155,7 @@ function Board(): JSX.Element {
   // control edit by press enter
   const enterInputTitle = async (event: React.KeyboardEvent): Promise<void> => {
     if (event.key === 'Enter') {
-      enterPresent = true;
+      setEnterPresent(true);
       if (boardId) await putData(boardId, undefined, title);
       if (inputRef.current) inputRef.current.blur();
       setIsInputTitle(false);

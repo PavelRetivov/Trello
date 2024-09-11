@@ -1,35 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import ICard from '../../../interfaces/ICard';
+import React, { useEffect, useRef, useState } from 'react';
 import './ModalWindowsAdd.scss';
 
 interface modalProps {
-  setData: (data: ICard) => void;
-  cardIdBoard: number;
+  setData: (data: { title: string; id: number; position: number }) => void;
+  listId: number;
+  cardLength: number;
   setIsModalWindows: (isTrue: boolean) => void;
+  setIsOpenModalWindowsAddCards: (isTrue: boolean) => void;
 }
 
-function ModalWindowsAdd({ setData, cardIdBoard, setIsModalWindows }: modalProps): JSX.Element {
+function ModalWindowsAdd({
+  setData,
+  listId,
+  setIsModalWindows,
+  cardLength,
+  setIsOpenModalWindowsAddCards,
+}: modalProps): JSX.Element {
   const [title, setTitle] = useState('');
   const [cardId, setCardId] = useState<number>();
-  const [position, setPosition] = useState<number>();
-  const [description, setDescription] = useState('');
-  const [custom, setCustom] = useState('');
+  const addDivRef = useRef<HTMLDivElement | null>(null);
 
   const enter = (): void => {
-    if (cardId && position) {
-      setData({
-        title,
-        id: cardId,
-        position,
-        description,
-        custom,
-      });
+    if (cardId) {
+      setData({ title, id: cardId, position: cardLength });
       setIsModalWindows(false);
+      setIsOpenModalWindowsAddCards(false);
     }
   };
   useEffect(() => {
-    setCardId(cardIdBoard);
-  }, [cardIdBoard]);
+    setCardId(listId);
+  }, [listId]);
   const stopPropagation = (event: React.MouseEvent): void => {
     event.stopPropagation();
   };
@@ -37,23 +37,28 @@ function ModalWindowsAdd({ setData, cardIdBoard, setIsModalWindows }: modalProps
   const titleText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
   };
-  const positionNumber = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setPosition(Number(event.target.value));
-  };
-  const descriptionText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setDescription(event.target.value);
-  };
-  const customAny = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setCustom(event.target.value);
+  const closeModalWindows = (): void => {
+    setIsModalWindows(false);
+    setIsOpenModalWindowsAddCards(false);
   };
 
+  useEffect(() => {
+    if (addDivRef.current) {
+      addDivRef.current.style.animation = 'expandHeightCards 0.3s forwards';
+    }
+  }, []);
+
   return (
-    <div onClick={stopPropagation} className="modal-style" style={{ pointerEvents: 'auto' }}>
-      <input type="text" value={title} onChange={titleText} />
-      <input type="number" name="" id="" value={position} onChange={positionNumber} />
-      <input type="text" name="" id="" value={description} onChange={descriptionText} />
-      <input type="text" name="" id="" value={custom} onChange={customAny} />
-      <button onClick={enter}>Enter</button>
+    <div onClick={stopPropagation} ref={addDivRef} className="modalPositionCardsAdd" style={{ pointerEvents: 'auto' }}>
+      <input type="text" value={title} onChange={titleText} placeholder="Введіть назву картки" />
+      <div className="positionButtonCardsAdd ">
+        <button onClick={enter} className="enterCards">
+          Enter
+        </button>
+        <button className="deleteCards" onClick={closeModalWindows}>
+          X
+        </button>
+      </div>
     </div>
   );
 }

@@ -29,7 +29,9 @@ function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList, listLength 
     }
     getList('setList');
   };
-
+  const closeModalWindows = (): void => {
+    setIsOpenModalWindows(false);
+  };
   useEffect(() => {
     if (addDivRef.current) {
       addDivRef.current.style.animation = 'expandHeight 0.15s forwards';
@@ -41,7 +43,7 @@ function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList, listLength 
       <input type="text" value={title} onChange={changeTitleText} placeholder="Введіть назву дошки" />
       <div className="positionButton">
         <button onClick={enter}>Додати дошку</button>
-        <button>X</button>
+        <button onClick={closeModalWindows}>X</button>
       </div>
     </div>
   );

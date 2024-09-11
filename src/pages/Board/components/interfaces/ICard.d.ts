@@ -4,5 +4,6 @@ interface ICard {
   position: number;
   description: string;
   custom: string;
+  listId: id;
 }
 export default ICard;

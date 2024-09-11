@@ -201,16 +201,17 @@ function Board(): JSX.Element {
           {list
             ? list
                 .sort((a, b) => a.position - b.position)
-                .map((card) => {
+                .map((listData) => {
+                  console.log(list);
                   return (
-                    <div key={card.id}>
+                    <div key={listData.id}>
                       <div className="list">
                         <List
                           boardId={boardId}
-                          title={card.title}
-                          cards={card.cards as ICard[]}
-                          id={card.id}
-                          position={card.position}
+                          title={listData.title}
+                          cards={listData.cards as ICard[]}
+                          id={listData.id}
+                          position={listData.position}
                           setIsInputTitle={setIsInputTitle}
                           getList={getList}
                           setIsOpenModalWindowsAddCards={setIsOpenModalWindowsAddCards}

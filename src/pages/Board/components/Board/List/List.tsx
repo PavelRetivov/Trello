@@ -21,12 +21,14 @@ function List({
 }: IList): JSX.Element {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [lastIsOpen, setLastIsOpen] = useState(false);
-  const [dataCard, setDataCard] = useState<ICard | undefined>();
+  const [dataCard, setDataCard] = useState<{ title: string; id: number; position: number } | undefined>();
   const [card, setCard] = useState<ICard[]>();
   const [textAreaValue, setTextAreaValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const isFirstRender = useRef(true);
+  const [listId] = useState<number>(id);
   let enterPresent = false;
+
   /// ///////////////////
 
   /* How this working?
@@ -35,7 +37,7 @@ function List({
   star function postList which add new data in data base.
   3.whet data update call function getList which update data in board, and we get new cards.
   */
-
+  console.log(cards);
   const postList = useCallback(async (): Promise<void> => {
     if (boardId && dataCard !== undefined) {
       await postDataCards(boardId, dataCard);
@@ -99,7 +101,7 @@ function List({
   const enterInputTitle = async (event: React.KeyboardEvent): Promise<void> => {
     if (event.key === 'Enter') {
       enterPresent = true;
-      if (boardId) await PutNewTitle(boardId, id, textAreaValue);
+      if (boardId) await PutNewTitle(boardId, listId, textAreaValue);
       if (textareaRef.current) textareaRef.current.blur();
       setIsInputTitle(false);
     }
@@ -110,10 +112,35 @@ function List({
       enterPresent = false;
       return;
     }
-    if (boardId) await PutNewTitle(boardId, id, textAreaValue);
+    if (boardId) await PutNewTitle(boardId, listId, textAreaValue);
     if (textareaRef.current) textareaRef.current.blur();
     setIsInputTitle(false);
   };
+
+  // logic update position board
+  // const updatePosition = async (cardId: number): Promise<void> => {
+  //   const updateList = cards?.filter((card: ICard) => card.id !== id);
+  //   // const deleteListPosition = cards?.filter((value: ICard) => value.id === id)[0].position;
+  //   console.log(updateList);
+  //   // console.log('pos: ' + deleteListPosition);
+  //   if (updateList && boardId) {
+  //     await Promise.all(
+  //       updateList.map(async (value: ICard, index) => {
+  //         await UpdatePositionCards({ idBoard: boardId, cardId: value.id, list_id: id });
+  //       })
+  //     );
+  //     // console.log(newList);
+  //     // console.log('ok');
+  //     // if (deleteListPosition !== undefined) {
+  //     //   const nedUpdateList = newList.slice(deleteListPosition);
+  //     //   console.log(nedUpdateList)
+  //     //   // if (nedUpdateList.length > 0) {
+  //     //     console.log(deleteListPosition);
+
+  //     //   // }
+  //     // }
+  //   }
+  // };
 
   return (
     <div>
@@ -133,7 +160,7 @@ function List({
             />
           </div>
           <div className="button-position">
-            <button onClick={() => deleteBoardById(id)}>X</button>
+            <button onClick={() => deleteBoardById(listId)}>X</button>
             <label htmlFor="titleAreaText">
               <button onClick={textAreaFocus}>Edit</button>
             </label>
@@ -151,10 +178,12 @@ function List({
                           props={{
                             title: a.title,
                             id: a.id,
+                            listId,
                             position: a.position,
                             description: a.description,
                             custom: a.custom,
                           }}
+                          setIsInputTitle={setIsInputTitle}
                           getList={getList}
                         />
                       </div>
@@ -162,17 +191,24 @@ function List({
                   })
                 : null}
             </ul>
-            <button className="add-card" onClick={openModalWindows}>
-              Додати карточку
-            </button>
+            {!isOpenModal ? (
+              <button className="add-card" onClick={openModalWindows}>
+                Додати карточку
+              </button>
+            ) : (
+              <div className="ModalWindowsTitleCards">
+                <ModalWindowsAdd
+                  cardLength={cards ? cards.length : 0}
+                  listId={listId}
+                  setData={setDataCard}
+                  setIsModalWindows={setIsOpenModal}
+                  setIsOpenModalWindowsAddCards={setIsOpenModalWindowsAddCards}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
-      {isOpenModal ? (
-        <div className="ModalWindowsAdd">
-          <ModalWindowsAdd cardIdBoard={id} setData={setDataCard} setIsModalWindows={setIsOpenModal} />
-        </div>
-      ) : null}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import Board from './Board/Board';
 import './home.scss';
 import IDate from '../interface/IData';
@@ -97,6 +98,9 @@ function Home(): JSX.Element {
 
   return (
     <div>
+      <Helmet>
+        <title>Мої доски | TrelloClone</title>
+      </Helmet>
       <div style={{ pointerEvents: modalWindowsAdd || modalWindowsEdition ? 'none' : 'auto' }} className="home">
         <div className="text-head">Мої Доски</div>
         <div className="home-Boards">

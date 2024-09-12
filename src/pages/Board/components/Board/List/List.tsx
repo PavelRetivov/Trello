@@ -40,7 +40,6 @@ function List({
   star function postList which add new data in data base.
   3.whet data update call function getList which update data in board, and we get new cards.
   */
-  console.log(cards);
   const postList = useCallback(async (): Promise<void> => {
     if (boardId && dataCard !== undefined) {
       await postDataCards(boardId, dataCard);

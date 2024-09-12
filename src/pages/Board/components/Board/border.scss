@@ -37,6 +37,7 @@
   border-right: 0px;
   border-top-left-radius: 10px;
   padding: 30px 10px 30px 50px;
+  background: white;
 }
 .list {
   display: flex;
@@ -55,7 +56,8 @@
 .headers {
   margin: 20px 0 150px 50px;
   display: flex;
-  justify-content: center;
+  justify-content: start;
+  gap: 50px;
 }
 .text {
   display: flex;
@@ -65,8 +67,6 @@
   min-width: 100px;
 }
 .buttonHome {
-  position: absolute;
-  left: 80px;
   @include main-button();
 }
 .buttonAdd {
@@ -79,8 +79,6 @@
 .textTitle {
   @include inputTitle;
   font-size: 50px;
-  position: absolute;
-  left: 300px;
   margin: 0;
   padding: 0;
   font-family: 'Rubik Doodle Shadow', system-ui;

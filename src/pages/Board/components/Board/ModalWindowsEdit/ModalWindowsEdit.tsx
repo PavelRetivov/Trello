@@ -15,7 +15,6 @@ interface modalProps {
 
 function ModalWindowsEdit({ setIsOpenModalEdit, configBoard, getList }: modalProps): JSX.Element {
   const [text, setText] = useState('');
-  console.log('edit');
 
   const handClick = (event: React.MouseEvent): void => {
     event.stopPropagation();
@@ -25,7 +24,6 @@ function ModalWindowsEdit({ setIsOpenModalEdit, configBoard, getList }: modalPro
   }, [configBoard]);
 
   const inputText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log('text');
     setText(event.target.value);
   };
   const enter = async (): Promise<void> => {

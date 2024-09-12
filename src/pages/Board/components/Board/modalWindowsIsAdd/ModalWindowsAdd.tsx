@@ -30,7 +30,6 @@ function ModalWindowsAdd({ idBorder, setIsOpenModalWindows, getList, listLength 
     if (checkTitle(title)) {
       setIsOpenModalWindows(false);
       if (idBorder !== 'error') {
-        console.log(idBorder, title);
         await postData(idBorder, title, listLength);
       }
       setIsError(false);

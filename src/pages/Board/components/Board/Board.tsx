@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import List from './List/List';
 import ICard from '../interfaces/ICard';
@@ -9,6 +10,7 @@ import ModalWindowsAdd from './modalWindowsIsAdd/ModalWindowsAdd';
 import Delete from '../Backend/Delete/Delete';
 import putData from '../Backend/PUT/Put';
 import UpdatePositionBoard from './UpdatePositionBoard/UpdatePositionBoard';
+import { checkTitle } from './checkValidTitle/CheckValidTitle';
 
 function Board(): JSX.Element {
   const { boardId } = useParams();
@@ -25,6 +27,7 @@ function Board(): JSX.Element {
   const [isOpenModalWindowsAddCards, setIsOpenModalWindowsAddCards] = useState(false);
   const [enterPresent, setEnterPresent] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [isError, setIsError] = useState(false);
 
   // resize position modalWindows when change size windows
   useEffect(() => {
@@ -41,20 +44,17 @@ function Board(): JSX.Element {
   const getList = useCallback(
     async (request: string): Promise<void> => {
       const data = boardId ? await getData(boardId) : undefined;
-      console.log(`request: ${request}`);
+
       if (data) {
         switch (request) {
           case 'setList':
             if ('lists' in data && data.lists && Array.isArray(data.lists)) {
               setList(data.lists);
-              console.log(data.lists);
-              console.log('setList');
             }
             break;
           case 'setTitle':
             if ('title' in data && typeof data.title === 'string') {
               setTitle(data.title);
-              console.log('setTitle');
             }
             break;
           case 'onlyData':
@@ -73,7 +73,6 @@ function Board(): JSX.Element {
               setList(data.lists);
               setTitle(data.title);
               setBackgroundColor(data.custom.background);
-              console.log(data.lists);
             }
             break;
           default:
@@ -86,7 +85,6 @@ function Board(): JSX.Element {
 
   // function for update information when update data
   useEffect(() => {
-    console.log('start');
     getList('onlyData');
   }, [getList]);
 
@@ -123,7 +121,6 @@ function Board(): JSX.Element {
           position: index,
         }))
       );
-      console.log('ok');
       if (deleteListPosition !== undefined) {
         const nedUpdateList = newList.slice(deleteListPosition);
         if (nedUpdateList.length > 0) {
@@ -147,18 +144,32 @@ function Board(): JSX.Element {
       setEnterPresent(false);
       return;
     }
-    if (boardId) await putData(boardId, undefined, title);
-    if (inputRef.current) inputRef.current.blur();
-    setIsInputTitle(false);
+    if (checkTitle(title)) {
+      if (boardId) await putData(boardId, undefined, title);
+      if (inputRef.current) inputRef.current.blur();
+      setIsInputTitle(false);
+      setIsError(false);
+    } else {
+      setIsError(true);
+      setIsInputTitle(false);
+      await getList('setTitle');
+    }
   };
 
   // control edit by press enter
   const enterInputTitle = async (event: React.KeyboardEvent): Promise<void> => {
     if (event.key === 'Enter') {
       setEnterPresent(true);
-      if (boardId) await putData(boardId, undefined, title);
-      if (inputRef.current) inputRef.current.blur();
-      setIsInputTitle(false);
+      if (checkTitle(title)) {
+        if (boardId) await putData(boardId, undefined, title);
+        if (inputRef.current) inputRef.current.blur();
+        setIsInputTitle(false);
+        setIsError(false);
+      } else {
+        setIsError(true);
+        setIsInputTitle(false);
+        await getList('setTitle');
+      }
     }
   };
 
@@ -167,8 +178,15 @@ function Board(): JSX.Element {
     setIsInputTitle(true);
   };
 
+  const isImageUrl = (url: string): boolean => {
+    return url.startsWith('url');
+  };
+
   return (
     <div className="container">
+      <Helmet>
+        <title>{title} | TrelloClone</title>
+      </Helmet>
       <div
         className="styleDisplay"
         style={{
@@ -182,7 +200,7 @@ function Board(): JSX.Element {
           <Link to="/">
             <button className="buttonHome">Домой</button>
           </Link>
-          <div>
+          <div style={{ height: '75px' }}>
             <input
               className="textTitle"
               type="text"
@@ -195,14 +213,23 @@ function Board(): JSX.Element {
               id=""
               value={title}
             />
+            {isError ? (
+              <p style={{ color: 'red', fontSize: '10px', padding: 0, margin: 0 }}>ці вікно не можн бути пустим</p>
+            ) : null}
           </div>
         </div>
-        <div className="border" style={{ background: backgroundColor }}>
+        <div
+          className="border"
+          style={{
+            backgroundImage: isImageUrl(backgroundColor) ? backgroundColor : 'none',
+            backgroundColor: !isImageUrl(backgroundColor) ? backgroundColor : 'none',
+            backgroundSize: '100% 100%',
+          }}
+        >
           {list
             ? list
                 .sort((a, b) => a.position - b.position)
                 .map((listData) => {
-                  console.log(list);
                   return (
                     <div key={listData.id}>
                       <div className="list">

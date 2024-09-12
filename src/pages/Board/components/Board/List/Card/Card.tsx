@@ -15,13 +15,13 @@ interface CardProps {
 
 function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Element {
   const { id, title, listId } = props;
-  const [textAreaValue, setTextAreaValue] = useState('');
+  const [textAreaValueCard, setTextAreaValueCard] = useState('');
   const testAreaRef = useRef<HTMLTextAreaElement>(null);
   const [enterPresent, setEnterPresent] = useState(false);
 
   // set on textAreaValue title
   useEffect(() => {
-    setTextAreaValue(title);
+    setTextAreaValueCard(title);
   }, [title]);
 
   // delete cards
@@ -35,7 +35,7 @@ function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Elem
   };
 
   const editTitleBoard = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    setTextAreaValue(event.target.value);
+    setTextAreaValueCard(event.target.value);
   };
 
   const onEditTitle = (): void => {
@@ -49,7 +49,7 @@ function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Elem
       setEnterPresent(false);
       return;
     }
-    if (boardId) await PutNewTitleCards({ idBoard: boardId, cardId: id, listId, title: textAreaValue });
+    if (boardId) await PutNewTitleCards({ idBoard: boardId, cardId: id, listId, title: textAreaValueCard });
     if (testAreaRef.current) testAreaRef.current.blur();
     setIsInputTitle(false);
   };
@@ -59,7 +59,7 @@ function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Elem
     if (event.key === 'Enter') {
       event.preventDefault();
       setEnterPresent(true);
-      if (boardId) await PutNewTitleCards({ idBoard: boardId, cardId: id, listId, title: textAreaValue });
+      if (boardId) await PutNewTitleCards({ idBoard: boardId, cardId: id, listId, title: textAreaValueCard });
       if (testAreaRef.current) testAreaRef.current.blur();
       setIsInputTitle(false);
     }
@@ -70,7 +70,7 @@ function Card({ props, boardId, getList, setIsInputTitle }: CardProps): JSX.Elem
       <div className="div-li">
         <TextareaAutoSize
           className="textAreaTitleCards"
-          value={textAreaValue}
+          value={textAreaValueCard}
           minRows={1}
           ref={testAreaRef}
           onChange={editTitleBoard}

@@ -39,4 +39,46 @@
     margin: 0;
     font-size: 10px;
   }
+  .setFon {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .setFonColor {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      figure {
+        width: 50px;
+        height: 50px;
+        background-color: black;
+      }
+    }
+    .setFonImage {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 10px 15px 0 15px;
+
+      figure {
+        padding: 0;
+        margin: 0;
+        width: 50px;
+        height: 50px;
+        background-color: black;
+      }
+    }
+  }
+
+  .figure {
+    border: 2px solid transparent; /* Без обводки за замовчуванням */
+    transition: border 0.3s ease; /* Анімація переходу обводки */
+    cursor: pointer; /* Курсор у вигляді руки при наведенні */
+  }
+
+  .figure.active {
+    border: 2px solid red; /* Обводка червоного кольору для активного блоку */
+  }
 }

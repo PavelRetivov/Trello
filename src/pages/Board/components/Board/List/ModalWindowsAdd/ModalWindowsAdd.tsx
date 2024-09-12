@@ -24,7 +24,6 @@ function ModalWindowsAdd({
   // enter add new board
   const enter = (): void => {
     if (checkTitle(title)) {
-      console.log(title);
       setData({ title, id: listId, position: cardLength });
       setIsModalWindows(false);
       setIsOpenModalWindowsAddCards(false);

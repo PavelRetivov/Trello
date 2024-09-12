@@ -4,6 +4,7 @@
 
 .modal-windows {
   @include modal-window;
+  height: 460px;
   label {
     font-family: 'Lunasima', sans-serif;
     font-weight: 700;
@@ -49,11 +50,63 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
+      gap: 30px;
 
       figure {
+        padding: 0;
+        margin: 0;
         width: 50px;
         height: 50px;
         background-color: black;
+      }
+      div {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+
+        h3 {
+          width: 50px;
+          font-size: 12px;
+        }
+      }
+    }
+    .setFinPeopleImage {
+      padding: 10px 15px 0 15px;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      gap: 20px;
+
+      figure {
+        width: 100px;
+        height: 100px;
+        padding: 0;
+        margin: 0;
+        border: 5px solid #72a2d6;
+        border-radius: 12px;
+        h2 {
+          font-size: 13px;
+        }
+      }
+      .inputImagePeople {
+        width: 100px;
+        height: 100px;
+      }
+      .divImagePeople {
+        width: 100px;
+        height: 100px;
+        background: #c9c8cf;
+        border: 5px solid purple;
+        border-radius: 8px;
+        div {
+          width: 100px;
+          height: 100px;
+          display: flex;
+          align-items: center;
+          h2 {
+            font-size: 14px;
+          }
+        }
       }
     }
     .setFonImage {

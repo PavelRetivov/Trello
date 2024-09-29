@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { GenericHTMLFormElement } from 'axios';
 import styles from '../../../../styles/pageBoardStyle.module.scss';
 import { useAppDispatch } from '../../../../store';
 import { getListsBoardByIdServiceThunk, postListInBoardByIdThunk } from '../../../../module/board';
+import useOutsideClick from '../../../../hooks/useOutsideClick';
 
 function AddNewList(): JSX.Element {
   const { boardId } = useParams();
@@ -19,23 +21,11 @@ function AddNewList(): JSX.Element {
     }
   };
 
-  const handleClick = (event: MouseEvent): void => {
-    if (formAddList.current && !formAddList.current.contains(event.target as Node)) {
-      setIsOpen(false);
-    }
+  useOutsideClick({ inputRef: inputNameList, isOpen, setIsOpen });
+
+  const handleSubmit = (event: React.FormEvent<GenericHTMLFormElement>): void => {
+    event.preventDefault();
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClick);
-    } else {
-      document.removeEventListener('mousedown', handleClick);
-    }
-
-    return (): void => {
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, [isOpen]);
 
   return (
     <div className={styles.windowsAddList}>
@@ -49,7 +39,7 @@ function AddNewList(): JSX.Element {
           add card
         </button>
       ) : (
-        <form className={styles.blockAddList} ref={formAddList}>
+        <form className={styles.blockAddList} ref={formAddList} onSubmit={handleSubmit}>
           <label className={styles.inputNameList} htmlFor="">
             {' '}
             Назва дошки

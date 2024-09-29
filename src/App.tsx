@@ -1,9 +1,9 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import React from 'react';
-import Board from './pages/Board/components/Board/Board';
+import Board from './pages/Board';
 import './App.css';
-import Home from './pages/Home/components/Home/Home';
+import Home from './pages/Home';
 
 function App(): JSX.Element {
   return (

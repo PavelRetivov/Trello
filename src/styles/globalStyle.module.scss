@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.modalWindowsForAddNewBoardInHome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .activeElement {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 18rem;
+    height: 12rem;
+    background: linear-gradient(
+      0,
+      rgba(65, 222, 160, 0.633578431372549) 30%,
+      rgba(199, 199, 191, 0.633578431372549) 53%,
+      rgba(210, 255, 219, 0.633578431372549) 78%
+    );
+    border-radius: 20px;
+    form {
+      align-items: start;
+      flex-direction: column;
+      justify-content: space-around;
+      height: 100%;
+      display: flex;
+      div.form {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 20px;
+        margin: 1.5rem 0px 0px 2rem;
+        label {
+          display: flex;
+          gap: 0.5rem;
+          input[type='color']::-webkit-color-swatch-wrapper {
+            padding: 0;
+            border-radius: 50px;
+          }
+          input[type='color']::-webkit-color-swatch {
+            border: none;
+            border-radius: 50px;
+          }
+          input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            outline: none;
+            box-shadow: 0;
+            cursor: pointer;
+            background: 0;
+            padding: 0;
+            margin: 0;
+            border: 0.1rem solid purple;
+          }
+          input.inputText {
+            border-radius: 1rem;
+            padding-left: 0.2rem;
+          }
+          input.inputText:focus {
+            cursor: text;
+          }
+          input.inputColor {
+            border: 0;
+          }
+          p {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      }
+      button {
+        display: block;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%);
+        width: 7rem;
+        height: 3rem;
+        border-radius: 5px;
+        background-color: #d98df7;
+        cursor: pointer;
+      }
+    }
+  }
+}

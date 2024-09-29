@@ -1,0 +1,92 @@
+$fon-color: linear-gradient(rgba(7, 237, 255, 1) 0%, rgba(255, 254, 144, 0.9248949579831933) 100%);
+
+.HomeStyle {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  min-height: 100vh;
+  background: $fon-color;
+}
+
+.headerHome {
+  margin: 3rem 0 0 0;
+  color: #007bff;
+  padding: 0;
+  font-size: 4rem;
+}
+.BoardsStyleInHome {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 3rem 7rem 0 10rem;
+  gap: 5rem;
+}
+.BoardStyleInHome {
+  text-decoration: none;
+  width: 9rem;
+  height: 7rem;
+  border-radius: 1rem;
+  padding: 1rem;
+  button {
+    cursor: pointer;
+    display: block;
+    position: relative;
+    left: 100%;
+    transform: translate(-100%);
+    border: 1px solid purple;
+    border-radius: 20px;
+    width: 1.5rem;
+    height: 1.5rem;
+    text-align: center;
+  }
+  h1 {
+    display: block;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+    max-width: 80%;
+    min-height: 0;
+    max-height: 70%;
+    font-size: 1.2rem;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    overflow: hidden;
+    color: #fafafa;
+  }
+  h1:hover + .tooltip {
+    visibility: visible;
+  }
+}
+.tooltip {
+  position: absolute;
+  min-width: 0rem;
+  max-width: 20rem;
+  min-height: 0rem;
+  max-height: 9rem;
+  text-align: left;
+  background: rgba(123, 123, 123, 1);
+  visibility: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  border-radius: 0.3rem;
+  z-index: 1;
+  p {
+    margin: 0.5rem;
+    font-size: 1rem;
+  }
+}
+.buttonAddBoard {
+  cursor: pointer;
+  width: 11rem;
+  height: 3rem;
+  background-color: rgba(128, 128, 128, 0.5);
+  border: none;
+  border-radius: 10px;
+  h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+  }
+}

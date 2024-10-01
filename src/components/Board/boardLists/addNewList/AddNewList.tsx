@@ -6,7 +6,8 @@ import { useAppDispatch } from '../../../../store';
 import { getListsBoardByIdServiceThunk, postListInBoardByIdThunk } from '../../../../module/board';
 import useOutsideClick from '../../../../hooks/useOutsideClick';
 
-function AddNewList(): JSX.Element {
+function AddNewList(addListProps: { position: number }): JSX.Element {
+  const { position } = addListProps;
   const { boardId } = useParams();
   const inputNameList = useRef<HTMLInputElement>(null);
   const formAddList = useRef<HTMLFormElement>(null);
@@ -15,13 +16,13 @@ function AddNewList(): JSX.Element {
 
   const addNewList = async (): Promise<void> => {
     if (boardId && inputNameList.current?.value && inputNameList.current.value.length > 1) {
-      await dispatch(postListInBoardByIdThunk({ idBoard: boardId, title: inputNameList.current.value }));
+      await dispatch(postListInBoardByIdThunk({ idBoard: boardId, title: inputNameList.current.value, position }));
       await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
       inputNameList.current.value = '';
     }
   };
 
-  useOutsideClick({ inputRef: inputNameList, isOpen, setIsOpen });
+  useOutsideClick({ inputRef: formAddList, isOpen, setIsOpen });
 
   const handleSubmit = (event: React.FormEvent<GenericHTMLFormElement>): void => {
     event.preventDefault();
@@ -36,7 +37,7 @@ function AddNewList(): JSX.Element {
             setIsOpen(true);
           }}
         >
-          add card
+          add list
         </button>
       ) : (
         <form className={styles.blockAddList} ref={formAddList} onSubmit={handleSubmit}>

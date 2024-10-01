@@ -44,10 +44,10 @@ export const putBoardName = async (idBoard: number, newTitle: string): Promise<s
   return newTitle;
 };
 
-export const postListInBoardById = async (idBoard: string, title: string): Promise<void> => {
+export const postListInBoardById = async (idBoard: string, title: string, position: number): Promise<void> => {
   const response = await api.post(`/board/${idBoard}/list`, {
     title,
-    position: 1,
+    position,
   });
   console.log(response);
 };
@@ -90,5 +90,46 @@ export const putListNameInBoard = async (boardId: string, listId: number, title:
   const request = await api.put(`/board/${boardId}/list/${listId}`, {
     title,
   });
+  console.log(request);
+};
+
+export const putCardNameInList = async (
+  boardId: string,
+  listId: number,
+  cardId: number,
+  nameCard: string
+): Promise<void> => {
+  const url = `/board/${boardId}/card/${cardId}`;
+  const request = await api.put(url, {
+    title: nameCard,
+    list_id: listId,
+  });
+  console.log('update information', request);
+};
+
+interface putPositionListProps {
+  id: number;
+  position: number;
+}
+
+export const putPositionList = async (boardId: string, newPositionList: putPositionListProps[]): Promise<void> => {
+  const url = `/board/${boardId}/list`;
+  const request = await api.put(url, newPositionList);
+  console.log('putPositionList', request);
+};
+
+interface putPositionCardProps {
+  id: number;
+  position: number;
+}
+export const putPositionCard = async (
+  boardId: string,
+  listId: number,
+  newPositionCard: putPositionCardProps[]
+): Promise<void> => {
+  const url = `/board/${boardId}/list/${listId}/card`;
+  console.log('url', url);
+  console.log('newPositionCard', newPositionCard);
+  const request = api.put(url, newPositionCard);
   console.log(request);
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../styles/homeStyle.module.scss';
-import HomeBoard from '../components/homeBoards/HomeBoards';
+import HomeBoard from '../components/Home/HomeBoards';
 
 function Home(): JSX.Element {
   return (

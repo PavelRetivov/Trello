@@ -30,11 +30,11 @@ export const putBoardNameThunk = createAsyncThunk<string, { idBoard: number; new
   }
 );
 
-export const postListInBoardByIdThunk = createAsyncThunk<void, { idBoard: string; title: string }>(
+export const postListInBoardByIdThunk = createAsyncThunk<void, { idBoard: string; title: string; position: number }>(
   'board/postListInBoardById',
   async (args) => {
-    const { idBoard, title } = args;
-    await postListInBoardById(idBoard, title);
+    const { idBoard, title, position } = args;
+    await postListInBoardById(idBoard, title, position);
   }
 );
 

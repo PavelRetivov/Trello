@@ -6,6 +6,7 @@ interface ICard {
   custom: { deadline: string };
   users: number[];
   created_at: number;
+  position: number;
 }
 
 export default ICard;

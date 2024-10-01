@@ -1,14 +1,29 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectBoard } from '../../../module/board';
+import { getListsBoardByIdServiceThunk, selectBoard } from '../../../module/board';
 import styles from '../../../styles/pageBoardStyle.module.scss';
 import List from './list/list';
 import NameBoard from './nameBoard/NameBoard';
 import AddNewList from './addNewList/AddNewList';
+import { putPositionList } from '../../../services/Services';
+import { useAppDispatch } from '../../../store';
 
 function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
   const { lists, title } = useSelector(selectBoard);
   const { boardId } = boardDataId;
+  const dispatch = useAppDispatch();
+
+  const updatePosition = async (position: number): Promise<void> => {
+    const newPositionList = lists
+      ?.filter((list) => list.position !== position)
+      .map((list, index) => ({ id: list.id, position: index + 1 }));
+
+    if (boardId && newPositionList) {
+      await putPositionList(boardId, newPositionList);
+      await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
+    }
+  };
+
   return (
     <div className={styles.positionTitleAndList}>
       <div className={styles.name}>
@@ -16,8 +31,8 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
       </div>
       <div className={styles.listBlock}>
         <ol className={styles.lists}>
-          {lists?.map((list) => <List key={list.id} idBoard={boardId} list={list} />)}
-          <AddNewList key={boardId} />
+          {lists?.map((list) => <List key={list.id} idBoard={boardId} list={list} updatePosition={updatePosition} />)}
+          <AddNewList key={boardId} position={lists ? lists.length + 1 : 1} />
         </ol>
       </div>
     </div>

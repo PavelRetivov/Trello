@@ -1,7 +1,7 @@
 import { RefObject, useEffect } from 'react';
 
 interface useOutsideClickProps {
-  inputRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<HTMLInputElement> | RefObject<HTMLFormElement>;
   isOpen: boolean;
   setIsOpen: (focus: boolean) => void;
 }

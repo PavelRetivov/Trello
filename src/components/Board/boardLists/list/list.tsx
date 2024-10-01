@@ -3,23 +3,36 @@ import IList from '../../../../interface/IDataList';
 import Card from './card/card';
 import styles from '../../../../styles/pageBoardStyle.module.scss';
 import { useAppDispatch } from '../../../../store';
-import { deleteListInBoardThunk, getListsBoardByIdServiceThunk } from '../../../../module/board';
+import { deleteListInBoardThunk } from '../../../../module/board';
 import AddNewCard from './addNewCard/AddNewCard';
 import ListName from './listName/ListName';
+import { putPositionCard } from '../../../../services/Services';
 
 interface listProps {
   list: IList;
   idBoard: string | undefined;
+  updatePosition: (position: number) => void;
 }
 
-function List({ list, idBoard }: listProps): JSX.Element {
-  const { id, title, cards } = list;
+function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
+  const { id, title, cards, position } = list;
   const dispatch = useAppDispatch();
+
+  console.log(title, cards);
 
   const deleteList = async (): Promise<void> => {
     if (idBoard) {
       await dispatch(deleteListInBoardThunk({ idBoard, idList: id }));
-      await dispatch(getListsBoardByIdServiceThunk(Number(idBoard)));
+      updatePosition(position);
+    }
+  };
+
+  const updatePositionCard = async (deletePosition: number): Promise<void> => {
+    const newPositionCard = cards
+      .filter((card) => card.position !== deletePosition)
+      .map((card, index) => ({ id: card.id, position: index }));
+    if (idBoard) {
+      await putPositionCard(idBoard, id, newPositionCard);
     }
   };
 
@@ -30,8 +43,10 @@ function List({ list, idBoard }: listProps): JSX.Element {
           delete
         </button>
         <ListName title={title} idList={id} idBoard={idBoard} />
-        <div className={styles.cardsBlock}>{cards?.map((card) => <Card key={card.id} card={card} />)}</div>
-        <AddNewCard idList={id} />
+        <div className={styles.cardsBlock}>
+          {cards?.map((card) => <Card key={card.id} card={card} listId={id} updatePositionCard={updatePositionCard} />)}
+        </div>
+        <AddNewCard idList={id} position={cards.length + 1} />
       </div>
     </li>
   );

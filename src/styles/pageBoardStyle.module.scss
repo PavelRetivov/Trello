@@ -182,10 +182,19 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    animation: stretchInHeightByCard 0.5s ease forwards;
     .textAreaCard {
       width: 9rem;
       height: 1.2rem;
       resize: none;
+      overflow-y: hidden;
+      border-radius: 10px;
+      padding: 0 0.3rem 0 0.3rem;
+      outline: none;
+      transition: border 0.5s ease;
+    }
+    .textAreaCard:focus-visible {
+      border: 2px solid blue;
     }
     .buttonAddAndDeleteCard {
       display: flex;
@@ -315,11 +324,23 @@
             .cardsBlock {
               .card {
                 position: relative;
+                .cardName {
+                  padding: 0;
+                  margin: 0;
+                }
                 button {
                   position: absolute;
                   right: 0;
                   top: 4px;
                   transform: translate(-100%);
+                  background: red;
+                  border: none;
+                  border-radius: 50%;
+                  text-align: center;
+                  font-size: 0.8rem;
+                  width: 1rem;
+                  height: 1rem;
+                  cursor: pointer;
                 }
               }
             }
@@ -336,5 +357,14 @@
   }
   to {
     height: 6rem;
+  }
+}
+
+@keyframes stretchInHeightByCard {
+  from {
+    height: 2rem;
+  }
+  to {
+    height: 3rem;
   }
 }

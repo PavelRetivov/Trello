@@ -136,6 +136,7 @@
     box-shadow: 1px 1px 1px 0.5px;
     border-radius: 12px;
     margin-right: 0.2rem;
+    cursor: pointer;
   }
 
   .blockAddList {
@@ -163,6 +164,7 @@
         box-sizing: content-box;
         padding: 0.2rem;
         border-radius: 10px;
+        cursor: pointer;
       }
     }
   }
@@ -176,6 +178,7 @@
     border-radius: 9px;
     background-color: #f1f2f4;
     color: #44546f;
+    cursor: pointer;
   }
 
   .blockAddCard {
@@ -203,9 +206,11 @@
       margin-top: 0.5rem;
       .buttonAddCard {
         width: 6rem;
+        cursor: pointer;
       }
       .buttonCloseCard {
         width: 2.5rem;
+        cursor: pointer;
       }
     }
   }
@@ -319,6 +324,7 @@
               box-sizing: content-box;
               padding: 0.2rem;
               box-shadow: 0.2px 0.1px 0.2px 0.1px rgba(189, 177, 196, 0.75);
+              cursor: pointer;
             }
 
             .cardsBlock {

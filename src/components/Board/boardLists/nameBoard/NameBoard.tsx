@@ -9,7 +9,6 @@ function NameBoard(data: { nameBoard: string; boardId: number | null }): JSX.Ele
   const { nameBoard, boardId } = data;
   const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     setInputValue(nameBoard);
     setIsFocus(false);

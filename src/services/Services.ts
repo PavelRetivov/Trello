@@ -52,7 +52,7 @@ export const postListInBoardById = async (idBoard: string, title: string, positi
   console.log(response);
 };
 
-export const getListsBoardByIdService = async (idBoard: number): Promise<IList[] | [] | null> => {
+export const getListsBoardByIdService = async (idBoard: number): Promise<IList[]> => {
   const request: stateBoard = await api.get(`/board/${idBoard}`);
   return request.lists;
 };
@@ -121,15 +121,10 @@ export const putPositionList = async (boardId: string, newPositionList: putPosit
 interface putPositionCardProps {
   id: number;
   position: number;
+  list_id: number;
 }
-export const putPositionCard = async (
-  boardId: string,
-  listId: number,
-  newPositionCard: putPositionCardProps[]
-): Promise<void> => {
-  const url = `/board/${boardId}/list/${listId}/card`;
-  console.log('url', url);
-  console.log('newPositionCard', newPositionCard);
-  const request = api.put(url, newPositionCard);
+export const putPositionCard = async (boardId: string, newPositionCard: putPositionCardProps[]): Promise<void> => {
+  const url = `/board/${boardId}/card`;
+  const request = await api.put(url, newPositionCard);
   console.log(request);
 };

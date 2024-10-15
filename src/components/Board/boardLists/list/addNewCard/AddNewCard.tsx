@@ -29,8 +29,9 @@ function AddNewCard(addCardProps: { idList: number; position: number }): JSX.Ele
     }
   };
 
-  const handelSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handelSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
+    await addCard();
   };
 
   return (
@@ -48,7 +49,7 @@ function AddNewCard(addCardProps: { idList: number; position: number }): JSX.Ele
         <form className={styles.blockAddCard} ref={formAddCard} onSubmit={handelSubmit}>
           <TextareaAutosize className={styles.textAreaCard} minRows={1} ref={textAreaNameList} />
           <div className={styles.buttonAddAndDeleteCard}>
-            <button className={styles.buttonAddCard} onClick={addCard}>
+            <button className={styles.buttonAddCard} type="submit">
               add
             </button>
             <button className={styles.buttonCloseCard} onClick={() => setIsOpen(false)}>

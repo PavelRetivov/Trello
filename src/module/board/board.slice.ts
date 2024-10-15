@@ -5,13 +5,13 @@ import { getBoardByIdThunk, getListsBoardByIdServiceThunk, putBoardNameThunk } f
 export interface stateBoard {
   title: string | null;
   custom: { background: string } | null;
-  lists: IList[] | [] | null;
+  lists: IList[];
 }
 
 const initialState: stateBoard = {
   title: null,
   custom: null,
-  lists: null,
+  lists: [],
 };
 
 const boardSlice = createSlice({
@@ -30,7 +30,6 @@ const boardSlice = createSlice({
       })
       .addCase(getListsBoardByIdServiceThunk.fulfilled, (state, action) => {
         state.lists = action.payload;
-        console.log('lsits', state.lists);
       });
   },
 });

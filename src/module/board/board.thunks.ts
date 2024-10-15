@@ -13,7 +13,7 @@ import IList from '../../interface/IDataList';
 interface board {
   title: string | null;
   custom: { background: string } | null;
-  lists: IList[] | null;
+  lists: IList[];
 }
 
 export const getBoardByIdThunk = createAsyncThunk<board, number>('board/getBoardById', async (idBoard: number) => {
@@ -38,7 +38,7 @@ export const postListInBoardByIdThunk = createAsyncThunk<void, { idBoard: string
   }
 );
 
-export const getListsBoardByIdServiceThunk = createAsyncThunk<IList[] | [] | null, number>(
+export const getListsBoardByIdServiceThunk = createAsyncThunk<IList[], number>(
   'board/getListsBoardByIdService',
   async (boardId) => {
     const request = await getListsBoardByIdService(boardId);

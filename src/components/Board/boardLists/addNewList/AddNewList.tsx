@@ -24,8 +24,9 @@ function AddNewList(addListProps: { position: number }): JSX.Element {
 
   useOutsideClick({ inputRef: formAddList, isOpen, setIsOpen });
 
-  const handleSubmit = (event: React.FormEvent<GenericHTMLFormElement>): void => {
+  const handleSubmit = async (event: React.FormEvent<GenericHTMLFormElement>): Promise<void> => {
     event.preventDefault();
+    await addNewList();
   };
 
   return (
@@ -47,7 +48,7 @@ function AddNewList(addListProps: { position: number }): JSX.Element {
             <input ref={inputNameList} type="text" />
           </label>
           <div className={styles.buttonAddAndDelete}>
-            <button onClick={addNewList}>add</button>
+            <button type="submit">add</button>
             <button onClick={() => setIsOpen(false)}>close</button>
           </div>
         </form>

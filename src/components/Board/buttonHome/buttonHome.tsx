@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../../styles/pageBoardStyle.module.scss';
 
@@ -10,4 +10,4 @@ function ButtonHome(): JSX.Element {
   );
 }
 
-export default memo(ButtonHome);
+export default React.memo(ButtonHome);

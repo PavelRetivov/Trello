@@ -327,48 +327,63 @@
               box-shadow: 0.2px 0.1px 0.2px 0.1px rgba(189, 177, 196, 0.75);
               cursor: pointer;
             }
-
             .cardsBlock {
-              .card {
-                position: relative;
-                h3 {
-                  padding: 0;
-                  margin: 0;
-                  text-overflow: unset;
-                  text-wrap: nowrap;
-                }
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+              .cards {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+
                 .pseudoCard {
-                  background-color: aqua;
+                  display: block;
+                  background-color: rgb(86, 94, 94);
                   width: 10rem;
-                  height: 1rem;
+                  min-height: 2rem;
                   border-radius: 12px;
                 }
-                .cardName {
-                  padding: 0;
-                  margin: 0;
-                  text-overflow: unset;
+                .card {
+                  position: relative;
                   background-color: white;
-                }
-                .buttons {
+                  border-radius: 16px;
+                  padding-left: 0.5rem;
                   display: flex;
-                  position: absolute;
-                  right: 0;
-                  top: 4px;
-                  text-align: center;
-                  font-size: 0.8rem;
-                  cursor: pointer;
-                  .edit {
-                    img {
-                      width: 0.8rem;
-                      height: 0.8rem;
-                    }
+                  flex-direction: column;
+                  justify-content: center;
+                  h3 {
+                    padding: 0;
+                    margin: 0;
+                    text-overflow: unset;
+                    text-wrap: nowrap;
+                    min-height: 2rem;
                   }
-                  button {
-                    width: 1rem;
-                    height: 1rem;
-                    border: none;
-                    border-radius: 50%;
+                  .cardName {
+                    padding: 0;
+                    margin: 0;
+                    text-overflow: unset;
+                    background-color: white;
+                  }
+                  .buttons {
+                    position: absolute;
+                    right: 0;
+                    top: 4px;
+                    text-align: center;
+                    font-size: 0.8rem;
                     cursor: pointer;
+                    .edit {
+                      img {
+                        width: 0.8rem;
+                        height: 0.8rem;
+                      }
+                    }
+                    button {
+                      width: 1rem;
+                      height: 1rem;
+                      border: none;
+                      border-radius: 50%;
+                      cursor: pointer;
+                    }
                   }
                 }
               }

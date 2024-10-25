@@ -1,7 +1,7 @@
 import api from '../api/request';
 import IDataBoard from '../interface/IDataBoard';
-import { stateBoard } from '../module/board/board.slice';
 import IList from '../interface/IDataList';
+import { IDataStateBoard } from '../interface/IDataStateBoard';
 
 export const getDataBoardsByHome = async (): Promise<IDataBoard[] | null> => {
   try {
@@ -31,8 +31,8 @@ export const postBoardHome = async (title: string, custom: { background: string 
   console.log(request);
 };
 
-export const getBoardByIdService = async (idBoard: number): Promise<stateBoard> => {
-  const request: stateBoard = await api.get(`/board/${idBoard}`);
+export const getBoardByIdService = async (idBoard: number): Promise<IDataStateBoard> => {
+  const request: IDataStateBoard = await api.get(`/board/${idBoard}`);
   return request;
 };
 
@@ -53,7 +53,7 @@ export const postListInBoardById = async (idBoard: string, title: string, positi
 };
 
 export const getListsBoardByIdService = async (idBoard: number): Promise<IList[]> => {
-  const request: stateBoard = await api.get(`/board/${idBoard}`);
+  const request: { lists: IList[] } = await api.get(`/board/${idBoard}`);
   return request.lists;
 };
 
@@ -68,15 +68,19 @@ export interface argsPost {
     title: string;
     listId: number;
     position: number;
+    description?: string;
+    custom?: { deadline: string };
   };
 }
 
 export const postCardInList = async ({ idBoard, dataPost }: argsPost): Promise<void> => {
-  const { title, listId, position } = dataPost;
+  const { title, listId, position, description, custom } = dataPost;
   const request = await api.post(`/board/${idBoard}/card`, {
     title,
     list_id: listId,
     position,
+    description: description || '',
+    custom,
   });
   console.log(request);
 };
@@ -98,13 +102,17 @@ export const putCardNameInList = async (
   listId: number,
   cardId: number,
   nameCard: string
-): Promise<void> => {
+): Promise<void | string> => {
   const url = `/board/${boardId}/card/${cardId}`;
   const request = await api.put(url, {
     title: nameCard,
     list_id: listId,
   });
   console.log('update information', request);
+  if (request && 'result' in request && typeof request.result === 'string') {
+    return request.result;
+  }
+  return undefined;
 };
 
 interface putPositionListProps {
@@ -125,6 +133,27 @@ interface putPositionCardProps {
 }
 export const putPositionCard = async (boardId: string, newPositionCard: putPositionCardProps[]): Promise<void> => {
   const url = `/board/${boardId}/card`;
+  console.log('url', url);
+  console.log('newPositionCard', newPositionCard);
   const request = await api.put(url, newPositionCard);
   console.log(request);
+};
+
+export const putDescriptionCard = async (
+  boardId: string,
+  cardId: string,
+  description: string,
+  listId: number
+): Promise<void | string> => {
+  const ulr = `/board/${boardId}/card/${cardId}`;
+  const request = await api.put(ulr, {
+    description,
+    list_id: listId,
+  });
+  console.log('update description', request);
+  if ('result' in request && typeof request.result === 'string') {
+    console.log(request.result);
+    return request.result;
+  }
+  return undefined;
 };

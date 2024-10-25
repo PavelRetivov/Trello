@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import style from '../../../styles/pageBoardStyle.module.scss';
 
 function Logo(): JSX.Element {
@@ -9,4 +9,4 @@ function Logo(): JSX.Element {
   );
 }
 
-export default memo(Logo);
+export default React.memo(Logo);

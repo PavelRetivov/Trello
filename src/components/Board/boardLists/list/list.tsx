@@ -35,7 +35,7 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
   ): Promise<void> => {
     let newPositionCard = [];
     if (isAnotherId) {
-      const selectedList = lists.find((valueList) => valueList.id === idListAnotherCard);
+      const selectedList = Object.values(lists).find((valueList) => valueList.id === idListAnotherCard);
       if (selectedList) {
         newPositionCard = selectedList.cards
           .filter((card) => card.id !== deleteId)
@@ -55,7 +55,7 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
 
   const handleDragEnter = (event: React.DragEvent<HTMLDivElement>): void => {
     const targetElement = event.target as HTMLElement;
-    const parentElement = targetElement.closest(`.${styles.card}`);
+    const parentElement = targetElement.closest(`.${styles.cards}`);
     if (parentElement) {
       setIsVisibleBlock(false);
     } else {
@@ -65,7 +65,7 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
 
   const handleDragLeave = (event: React.DragEvent<HTMLDivElement>): void => {
     const targetElement = event.target as HTMLElement;
-    const parentElement = targetElement.closest(`.${styles.card}`);
+    const parentElement = targetElement.closest(`.${styles.cards}`);
     if (!event.currentTarget.contains(event.relatedTarget as Node) || parentElement) {
       setIsVisibleBlock(false);
     }

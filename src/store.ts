@@ -2,10 +2,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import boardsReducer from './module/boards/boards.slice';
 import boardReducer from './module/board/board.slice';
+import modalEditCardSliceReducer from './module/modalEditCardSlice/modalEditCardSlice';
 
 const reducer = combineReducers({
   boards: boardsReducer,
   board: boardReducer,
+  modalEditCard: modalEditCardSliceReducer,
 });
 
 export const store = configureStore({

@@ -6,6 +6,7 @@ function LinkToBoard(data: { idBoard: number; title: string; custom: { backgroun
   const { idBoard, title, custom } = data;
   const { background } = custom;
   const location = useLocation();
+  const MemoizedNavLink = React.memo(NavLink);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
     if (location.pathname === `/board/${idBoard}`) {
@@ -14,7 +15,7 @@ function LinkToBoard(data: { idBoard: number; title: string; custom: { backgroun
   };
 
   return (
-    <NavLink
+    <MemoizedNavLink
       to={`/board/${idBoard.toString()}`}
       className={styles.linkStyle}
       style={({ isActive }) => ({ backgroundColor: isActive ? 'red' : 'transparent' })}
@@ -24,7 +25,7 @@ function LinkToBoard(data: { idBoard: number; title: string; custom: { backgroun
         <span className={styles.imageBoard} style={{ background }} />
       </div>
       <p className={styles.boardNameText}>{title}</p>
-    </NavLink>
+    </MemoizedNavLink>
   );
 }
 

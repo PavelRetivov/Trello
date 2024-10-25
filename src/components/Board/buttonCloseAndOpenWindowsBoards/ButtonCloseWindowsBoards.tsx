@@ -13,4 +13,4 @@ function ButtonCloseWindowsBoards({ setIsCloseWindowsBoards }: propsButtonCloseW
   );
 }
 
-export default ButtonCloseWindowsBoards;
+export default React.memo(ButtonCloseWindowsBoards);

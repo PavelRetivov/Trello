@@ -12,6 +12,7 @@ function App(): JSX.Element {
         <Routes>
           <Route index path="/" element={<Home />} />
           <Route path="/Board/:boardId" element={<Board />} />
+          <Route path="/Board/:boardId/card/:cardId" element={<Board />} />{' '}
         </Routes>
       </HelmetProvider>
     </HashRouter>

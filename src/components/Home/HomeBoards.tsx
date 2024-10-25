@@ -12,6 +12,7 @@ function Header(): JSX.Element {
 
   useEffect(() => {
     dispatch(fetchBoardsThunk());
+    document.title = 'My board | Trello clone';
   }, [dispatch]);
 
   const [isOpenModalWindowsForAddBoard, setIsOpenModalWindowsForAddBoard] = useState(false);

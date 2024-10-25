@@ -24,7 +24,7 @@ function ListName({ title, idList, idBoard }: listNameProps): JSX.Element {
         setIsOpen(false);
         if (inputRef.current && inputRef.current.value.length > 1 && idBoard) {
           await putListNameInBoard(idBoard, idList, inputRef.current.value);
-          dispatch(getListsBoardByIdServiceThunk(Number(idBoard)));
+          await dispatch(getListsBoardByIdServiceThunk(Number(idBoard)));
         }
       }
     };

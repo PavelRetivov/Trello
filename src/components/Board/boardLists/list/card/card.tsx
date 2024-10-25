@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ICard from '../../../../../interface/IDataCard';
 import { deleteCardInList, postCardInList, putCardNameInList } from '../../../../../services/Services';
 import { useAppDispatch } from '../../../../../store';
@@ -22,10 +22,13 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
   const dispatch = useAppDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
   const [isFocus, setIsFocus] = useState(false);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [isVisibleBlockTop, setIsVisibleBlockTop] = useState(false);
   const [isVisibleBlockBot, setIsVisibleBlockBot] = useState(false);
+  const [isShowButtons, setIsShowButtons] = useState(false);
+  const navigate = useNavigate();
 
   const handleDeleteCard = async (): Promise<void> => {
     if (boardId) {
@@ -40,20 +43,27 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     event.stopPropagation();
   };
 
-  const handleDragStart = (event: React.DragEvent<HTMLFormElement>): void => {
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {
     event.dataTransfer.setData('card', JSON.stringify(card));
     event.dataTransfer.setData('idList', listId.toString());
-    if (formRef.current) {
-      formRef.current.style.opacity = '0.5';
-    }
     setDraggingIndex(id);
+    const dragImage = document.createElement('div');
+    dragImage.innerText = 'Перетягнутий елемент';
+    dragImage.style.backgroundColor = 'lightgray';
+    dragImage.style.padding = '10px';
+    dragImage.style.border = '1px solid black';
+
+    event.dataTransfer.setDragImage(dragImage, 0, 0);
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLFormElement>): void => {
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
     event.preventDefault();
+    if (draggingIndex !== null && draggingIndex === id && divRef.current) {
+      divRef.current.style.display = 'none';
+    }
     // choice between create block from top and block from bot
     if (draggingIndex === null && draggingIndex !== id) {
-      const rect = formRef.current?.getBoundingClientRect();
+      const rect = divRef.current?.getBoundingClientRect();
       if (rect) {
         const offsetY = event.clientY - rect.top;
         const middle = rect.height / 2;
@@ -70,25 +80,25 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     }
   };
 
-  const handleDragLeave = (event: React.DragEvent<HTMLFormElement>): void => {
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>): void => {
     event.stopPropagation();
 
     // check is there leave it is outside it block
-    if (!formRef.current?.contains(event.relatedTarget as Node)) {
+    if (!divRef.current?.contains(event.relatedTarget as Node)) {
       setIsVisibleBlockBot(false);
       setIsVisibleBlockTop(false);
     }
   };
 
-  const handleDrop = async (event: React.DragEvent<HTMLFormElement>): Promise<void> => {
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>): Promise<void> => {
     if (draggingIndex !== null && draggingIndex === id) {
       return;
     }
     event.preventDefault();
+
     const dataCard = event.dataTransfer.getData('card');
     const idListAnotherCard = Number(event.dataTransfer.getData('idList'));
     const parseCard: ICard = JSON.parse(dataCard);
-
     if (boardId) {
       if (isVisibleBlockTop) {
         if (parseCard.position < position && idListAnotherCard === listId) {
@@ -120,10 +130,10 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     setIsVisibleBlockTop(false);
   };
 
-  const handleDragEnd = async (event: React.DragEvent<HTMLFormElement>): Promise<void> => {
+  const handleDragEnd = (event: React.DragEvent<HTMLDivElement>): void => {
     event.preventDefault();
-    if (formRef.current) {
-      formRef.current.style.opacity = '1';
+    if (divRef.current) {
+      divRef.current.style.display = 'flex';
     }
     setDraggingIndex(null);
   };
@@ -158,12 +168,14 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     };
   }, [isFocus, boardId, dispatch, listId, id, title]);
 
+  const openEditCard = (): void => {
+    navigate(`/board/${boardId}/card/${card?.id}`);
+  };
+
   return (
-    <form
-      className={style.card}
-      action=""
-      onSubmit={handleClick}
-      ref={formRef}
+    <div
+      className={style.cards}
+      ref={divRef}
       onDragStart={(event) => handleDragStart(event)}
       onDragOver={(event) => handleDragOver(event)}
       onDragLeave={handleDragLeave}
@@ -172,29 +184,39 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
       draggable
     >
       {isVisibleBlockTop && <div className={style.pseudoCard} />}
-      {!isFocus ? (
-        <h3>{title}</h3>
-      ) : (
-        <input
-          className={style.cardName}
-          type="text"
-          defaultValue={title}
-          ref={inputRef}
-          onFocus={() => {
-            setIsFocus(true);
-          }}
-        />
-      )}
-      <div className={style.buttons}>
-        <button onClick={() => setIsFocus(true)} className={style.edit}>
-          <img src={`${process.env.PUBLIC_URL}/edit.png`} alt="edit" />
-        </button>
-        <button onClick={handleDeleteCard} className={style.delete}>
-          X
-        </button>
-      </div>
+      <form
+        className={style.card}
+        action=""
+        onSubmit={handleClick}
+        onMouseEnter={() => setIsShowButtons(true)}
+        onMouseLeave={() => setIsShowButtons(false)}
+        ref={formRef}
+        onClick={openEditCard}
+      >
+        {!isFocus ? (
+          <h3>{title}</h3>
+        ) : (
+          <input
+            className={style.cardName}
+            type="text"
+            defaultValue={title}
+            ref={inputRef}
+            onFocus={() => {
+              setIsFocus(true);
+            }}
+          />
+        )}
+        <div className={style.buttons} style={{ display: isShowButtons ? 'flex' : 'none' }}>
+          <button onClick={() => setIsFocus(true)} className={style.edit}>
+            <img src={`${process.env.PUBLIC_URL}/edit.png`} alt="edit" />
+          </button>
+          <button onClick={handleDeleteCard} className={style.delete}>
+            X
+          </button>
+        </div>
+      </form>
       {isVisibleBlockBot && <div className={style.pseudoCard} />}
-    </form>
+    </div>
   );
 }
 

@@ -20,7 +20,7 @@ interface moveCardInAnotherPlaceProps {
   isCopyCard: boolean;
   isMoveCard: boolean;
   nativeListId: number | null;
-  setIsOpenAction: (isOpen: boolean) => void;
+  closeMoveAndCopyCardWindows: () => void;
 }
 
 function MoveAndCopyCard({
@@ -31,7 +31,7 @@ function MoveAndCopyCard({
   isCopyCard,
   isMoveCard,
   nativeListId,
-  setIsOpenAction,
+  closeMoveAndCopyCardWindows,
 }: moveCardInAnotherPlaceProps): JSX.Element {
   const [boardLists, setBoardLists] = useState<IList[] | null>(null);
   const [moveList, setMoveList] = useState<IList | null>(null);
@@ -74,7 +74,7 @@ function MoveAndCopyCard({
           nativeList: lists[nativeListId],
         });
         await dispatch(getBoardByIdThunk(Number(boardId)));
-        setIsOpenAction(false);
+        closeMoveAndCopyCardWindows();
       }
     } else {
       console.log('no infa');
@@ -95,6 +95,7 @@ function MoveAndCopyCard({
           },
         });
         await dispatch(getBoardByIdThunk(Number(boardId)));
+        closeMoveAndCopyCardWindows();
       }
     } else {
       console.log('copynoInfa');

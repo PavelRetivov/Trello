@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useParams } from 'react-router-dom';
 import styles from '../../../styles/globalStyle.module.scss';
@@ -6,6 +6,7 @@ import { putDescriptionCard } from '../../../services/Services';
 import { useAppDispatch } from '../../../store';
 import { getListsBoardByIdServiceThunk } from '../../../module/board';
 import { updateDescription } from '../../../module/modalEditCardSlice/modalEditCardSlice';
+import useCloseModalWindowsClick from '../../../hooks/useCloseModalWindowsClick';
 
 interface descriptionCardProps {
   description: string | null;
@@ -13,49 +14,67 @@ interface descriptionCardProps {
 }
 
 function DescriptionCard({ description, listId }: descriptionCardProps): JSX.Element {
-  const [isEditText, setIsEditText] = useState(false);
+  const [isEditText, setIsEditText] = useState(!description?.trim());
   const { boardId, cardId } = useParams();
   const [textDescription, setTextDescription] = useState(description || '');
   const areaTextRef = useRef<HTMLTextAreaElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const dispatch = useAppDispatch();
+  console.log('textDescription', textDescription);
 
-  useEffect(() => {
-    if (description) {
-      setIsEditText(true);
-    }
-  }, [description]);
-
-  const handleSubmit = async (event: FormEvent): Promise<void> => {
-    event.stopPropagation();
-    // if(boardId && cardId && listId && areaTextRef.current && areaTextRef.current.value.length > 2) {
-    //     const result = await putDescriptionCard(boardId, cardId, areaTextRef.current.value, Number(listId));
-    //     console.log(result);
-    //     if(result && result === 'Updated'){
-    //         dispatch(updateDescription({description: areaTextRef.current.value}));
-    //         console.log('update');
-    //     }
-    //     await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
-    // }
+  const handleSubmit = async (): Promise<void> => {
+    console.log('lalala');
   };
-
-  const addDescription = async (event: React.KeyboardEvent): Promise<void> => {
-    if (event.key === 'Enter') {
-      event.stopPropagation();
-      if (boardId && cardId && listId && textDescription && textDescription.length > 2) {
-        const result = await putDescriptionCard(boardId, cardId, textDescription, listId);
-        if (result && result === 'Updated') {
-          dispatch(updateDescription({ description: textDescription }));
-          console.log('update');
+  const addDescription = async (): Promise<void> => {
+    if (boardId && cardId && listId && textDescription !== description) {
+      const result = await putDescriptionCard(boardId, cardId, textDescription, listId);
+      if (result && result === 'Updated') {
+        dispatch(updateDescription({ description: textDescription }));
+        await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
+        if (textDescription.trim() === '') {
+          setIsEditText(true);
+        } else {
+          setIsEditText(false);
         }
       }
-      await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
+    } else {
+      setIsEditText(false);
     }
   };
+
+  useEffect(() => {
+    if (isEditText && areaTextRef.current && areaTextRef.current.value.length > 0) {
+      const lengthAreaText = areaTextRef.current.value.trimEnd().length;
+      areaTextRef.current.focus();
+      areaTextRef.current.setSelectionRange(lengthAreaText, lengthAreaText);
+    }
+  }, [isEditText, areaTextRef]);
+
+  /* not working how need */
+  // const acceptEditDescription = async (event: React.KeyboardEvent): Promise<void> => {
+  //   event.stopPropagation();
+  //   if (event.key === 'Enter') {
+  //     await addDescription();
+  //   }
+  // };
+
   const setText = (event: React.FormEvent<HTMLTextAreaElement>): void => {
     event.stopPropagation();
-    event.preventDefault();
     setTextDescription(event.currentTarget.value);
   };
+  const closeEditTextClick = async (event: MouseEvent): Promise<void> => {
+    if (areaTextRef.current && areaTextRef.current.value.length > 0) {
+      if (!(areaTextRef.current?.contains(event.target as Node) || buttonRef.current?.contains(event.target as Node))) {
+        await addDescription();
+      }
+    }
+  };
+
+  const buttonAcceptDescription = async (): Promise<void> => {
+    await addDescription();
+  };
+
+  useCloseModalWindowsClick({ isOpen: isEditText, closeListsBoardName: closeEditTextClick });
 
   return (
     <>
@@ -65,16 +84,14 @@ function DescriptionCard({ description, listId }: descriptionCardProps): JSX.Ele
       </div>
       <form className={styles.textDescription} onSubmit={handleSubmit}>
         {!isEditText ? (
-          <TextareaAutosize
-            onKeyDown={addDescription}
-            ref={areaTextRef}
-            minRows={5}
-            maxRows={10}
-            value={textDescription}
-            onInput={setText}
-          />
+          <pre onClick={() => setIsEditText(true)}>{description}</pre>
         ) : (
-          <pre onClick={() => setIsEditText(false)}>{description}</pre>
+          <>
+            <TextareaAutosize ref={areaTextRef} minRows={5} maxRows={10} value={textDescription} onInput={setText} />
+            <button onClick={buttonAcceptDescription} ref={buttonRef}>
+              Saved
+            </button>
+          </>
         )}
       </form>
     </>

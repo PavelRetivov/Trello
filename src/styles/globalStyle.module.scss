@@ -178,8 +178,25 @@
           }
         }
         .textDescription {
-          pre {
+          max-width: 22rem;
+          padding-top: 2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          pre,
+          textArea {
+            width: 100%;
+            font-size: 1.2rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
             cursor: pointer;
+            resize: none;
+          }
+          button {
+            width: 3rem;
+            height: 1.7rem;
+            border-radius: 5px;
+            background-color: blue;
           }
         }
       }

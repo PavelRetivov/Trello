@@ -85,6 +85,12 @@ const ModalWindowsEditCard = ({
     }
   };
 
+  const closeMoveAndCopyCardWindows = (): void => {
+    setIsOpenAction(false);
+    setIsCopyCard(false);
+    setIsMoveCard(false);
+  };
+
   useCloseModalWindowsClick({ isOpen: isOpenAction, closeListsBoardName: closeModalWindowsMoveCardInAnotherPlace });
   useCloseModalWindowsClick({ isOpen, closeListsBoardName: closeModalWindowsEditCard });
 
@@ -124,7 +130,7 @@ const ModalWindowsEditCard = ({
             isCopyCard={isCopyCard}
             isMoveCard={isMoveCard}
             nativeListId={listId}
-            setIsOpenAction={setIsOpenAction}
+            closeMoveAndCopyCardWindows={closeMoveAndCopyCardWindows}
           />
         ) : null}
       </div>

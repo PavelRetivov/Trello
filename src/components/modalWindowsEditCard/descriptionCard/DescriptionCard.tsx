@@ -41,6 +41,7 @@ function DescriptionCard({ description, listId }: descriptionCardProps): JSX.Ele
       setIsEditText(true);
     } else {
       setIsEditText(false);
+      console.log('its Ok');
     }
   };
 

@@ -37,6 +37,8 @@ function DescriptionCard({ description, listId }: descriptionCardProps): JSX.Ele
           setIsEditText(false);
         }
       }
+    } else if (textDescription.trim() === '') {
+      setIsEditText(true);
     } else {
       setIsEditText(false);
     }

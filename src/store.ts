@@ -3,11 +3,13 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 import boardsReducer from './module/boards/boards.slice';
 import boardReducer from './module/board/board.slice';
 import modalEditCardSliceReducer from './module/modalEditCardSlice/modalEditCardSlice';
+import { dragAndDropReducer } from './module/dragAndDrop';
 
 const reducer = combineReducers({
   boards: boardsReducer,
   board: boardReducer,
   modalEditCard: modalEditCardSliceReducer,
+  dragAndDropReducer,
 });
 
 export const store = configureStore({

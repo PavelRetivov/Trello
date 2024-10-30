@@ -1,10 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ICard from '../../../../../interface/IDataCard';
-import { deleteCardInList, postCardInList, putCardNameInList } from '../../../../../services/Services';
-import { useAppDispatch } from '../../../../../store';
+import { deleteCardInList, putCardNameInList } from '../../../../../services/Services';
+import { useAppDispatch, useAppSelector } from '../../../../../store';
 import { getListsBoardByIdServiceThunk } from '../../../../../module/board';
 import style from '../../../../../styles/pageBoardStyle.module.scss';
+import {
+  setCardDropPosition,
+  setDropCardId,
+  setDropListId,
+  setStartCardId,
+} from '../../../../../module/dragAndDrop/dragAndDropSlice.slice';
+import { selectBotBlock, selectDropCardId, selectTopBlock } from '../../../../../module/dragAndDrop';
 
 interface cardPros {
   card: ICard;
@@ -24,9 +31,9 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
   const formRef = useRef<HTMLFormElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
   const [isFocus, setIsFocus] = useState(false);
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const [isVisibleBlockTop, setIsVisibleBlockTop] = useState(false);
-  const [isVisibleBlockBot, setIsVisibleBlockBot] = useState(false);
+  const isVisibleBlockTop = useAppSelector(selectTopBlock);
+  const isVisibleBlockBot = useAppSelector(selectBotBlock);
+  const dropCardId = useAppSelector(selectDropCardId);
   const [isShowButtons, setIsShowButtons] = useState(false);
   const navigate = useNavigate();
 
@@ -41,101 +48,6 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
   const handleClick = (event: React.FormEvent): void => {
     event.preventDefault();
     event.stopPropagation();
-  };
-
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {
-    event.dataTransfer.setData('card', JSON.stringify(card));
-    event.dataTransfer.setData('idList', listId.toString());
-    setDraggingIndex(id);
-    const dragImage = document.createElement('div');
-    dragImage.innerText = 'Перетягнутий елемент';
-    dragImage.style.backgroundColor = 'lightgray';
-    dragImage.style.padding = '10px';
-    dragImage.style.border = '1px solid black';
-
-    event.dataTransfer.setDragImage(dragImage, 0, 0);
-  };
-
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
-    event.preventDefault();
-    if (draggingIndex !== null && draggingIndex === id && divRef.current) {
-      divRef.current.style.display = 'none';
-    }
-    // choice between create block from top and block from bot
-    if (draggingIndex === null && draggingIndex !== id) {
-      const rect = divRef.current?.getBoundingClientRect();
-      if (rect) {
-        const offsetY = event.clientY - rect.top;
-        const middle = rect.height / 2;
-        if (offsetY < middle) {
-          if (!isVisibleBlockTop) {
-            setIsVisibleBlockTop(true);
-            setIsVisibleBlockBot(false);
-          }
-        } else if (!isVisibleBlockBot) {
-          setIsVisibleBlockBot(true);
-          setIsVisibleBlockTop(false);
-        }
-      }
-    }
-  };
-
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>): void => {
-    event.stopPropagation();
-
-    // check is there leave it is outside it block
-    if (!divRef.current?.contains(event.relatedTarget as Node)) {
-      setIsVisibleBlockBot(false);
-      setIsVisibleBlockTop(false);
-    }
-  };
-
-  const handleDrop = async (event: React.DragEvent<HTMLDivElement>): Promise<void> => {
-    if (draggingIndex !== null && draggingIndex === id) {
-      return;
-    }
-    event.preventDefault();
-
-    const dataCard = event.dataTransfer.getData('card');
-    const idListAnotherCard = Number(event.dataTransfer.getData('idList'));
-    const parseCard: ICard = JSON.parse(dataCard);
-    if (boardId) {
-      if (isVisibleBlockTop) {
-        if (parseCard.position < position && idListAnotherCard === listId) {
-          parseCard.position = position - 1;
-        } else {
-          parseCard.position = position;
-        }
-      } else if (isVisibleBlockBot) {
-        if (parseCard.position < position && idListAnotherCard === listId) {
-          parseCard.position = position;
-        } else {
-          parseCard.position = position + 1;
-        }
-      }
-      await deleteCardInList(boardId, parseCard.id);
-      if (listId === idListAnotherCard) {
-        await updatePositionCardHandleDelete(parseCard.id);
-      } else {
-        await updatePositionCardHandleDelete(parseCard.id, true, idListAnotherCard);
-      }
-      await postCardInList({
-        idBoard: boardId,
-        dataPost: { title: parseCard.title, listId, position: parseCard.position },
-      });
-    }
-    await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
-
-    setIsVisibleBlockBot(false);
-    setIsVisibleBlockTop(false);
-  };
-
-  const handleDragEnd = (event: React.DragEvent<HTMLDivElement>): void => {
-    event.preventDefault();
-    if (divRef.current) {
-      divRef.current.style.display = 'flex';
-    }
-    setDraggingIndex(null);
   };
 
   useEffect(() => {
@@ -169,21 +81,64 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
   }, [isFocus, boardId, dispatch, listId, id, title]);
 
   const openEditCard = (): void => {
-    navigate(`/board/${boardId}/card/${card?.id}`);
+    navigate(`/board/${boardId}/card/${id}`);
+  };
+
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {
+    dispatch(setDropListId({ id: listId }));
+    dispatch(setStartCardId({ id }));
+    dispatch(setDropCardId({ id }));
+    event.dataTransfer.setData('cardId', id.toString());
+    event.dataTransfer.setData('listId', listId.toString());
+    event.dataTransfer.setData('cardPosition', position.toString());
+  };
+
+  const handleDragEnter = (): void => {
+    if (dropCardId !== id) {
+      dispatch(setDropCardId({ id }));
+      dispatch(setCardDropPosition({ position }));
+    }
+  };
+
+  const handleOnDrag = (): void => {
+    if (dropCardId === id && divRef.current) {
+      divRef.current.style.opacity = '0.5';
+    } else if (divRef.current) {
+      divRef.current.style.display = 'none';
+    }
+  };
+
+  const checkTopBlock = (): boolean => {
+    if (isVisibleBlockTop && dropCardId === id) {
+      return true;
+    }
+    return false;
+  };
+
+  const checkBotBlock = (): boolean => {
+    if (isVisibleBlockBot && dropCardId === id) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
+    event.preventDefault();
   };
 
   return (
     <div
+      id={`${card.id.toString()}C`}
       className={style.cards}
       ref={divRef}
-      onDragStart={(event) => handleDragStart(event)}
-      onDragOver={(event) => handleDragOver(event)}
-      onDragLeave={handleDragLeave}
-      onDragEnd={handleDragEnd}
-      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragStart={handleDragStart}
+      onDragEnter={handleDragEnter}
+      onDrag={handleOnDrag}
       draggable
     >
-      {isVisibleBlockTop && <div className={style.pseudoCard} />}
+      {checkTopBlock() && <div className={style.pseudoCard} />}
+
       <form
         className={style.card}
         action=""
@@ -215,7 +170,7 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
           </button>
         </div>
       </form>
-      {isVisibleBlockBot && <div className={style.pseudoCard} />}
+      {checkBotBlock() && <div className={style.pseudoCard} />}
     </div>
   );
 }

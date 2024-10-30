@@ -37,7 +37,6 @@ function ChosePosition({ maxPosition, setPositionMovedCard, isThisList }: choseB
     setPosition(pos);
     setPositionMovedCard(Number(pos));
     setIsToggleList(false);
-    console.log('position:', pos);
   };
 
   const closeListsName = (event: MouseEvent): void => {

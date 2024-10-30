@@ -65,7 +65,6 @@ const ModalWindowsEditCard = ({
 
   const closeModalWindowsMoveCardInAnotherPlace = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
-
     if (target.closest(`.${styles.moveCardInAnotherPlace}`)) {
       console.log('hz6');
     } else {

@@ -11,6 +11,13 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { selectDataEditCard } from '../../../module/modalEditCardSlice';
 import { setIsOpen, updateModalEditCard } from '../../../module/modalEditCardSlice/modalEditCardSlice';
 import ModalWindowsEditCard from '../../modalWindowsEditCard/ModalWindowsEditCard';
+import { activateBotBlock, activateTopBlock, resetState } from '../../../module/dragAndDrop/dragAndDropSlice.slice';
+import { selectDragAndDropData } from '../../../module/dragAndDrop';
+import { moveCardAndThisBoard } from '../../../utils/cardUntils/moveCardAndThisBoard';
+import {
+  getActiveBlockPositionOnAnotherList,
+  getActiveBlockPositionOnCurrentList,
+} from '../../../utils/dragAndDropUtils/dragAndDropCardUtil';
 
 function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
   const { lists, title, custom } = useSelector(selectBoard);
@@ -21,8 +28,9 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
   const { cardId } = useParams();
   const navigate = useNavigate();
   const [listId, setListId] = useState<number | null>(null);
-
-  console.log('lists', lists);
+  const [isDropped, setIsDropped] = useState(false);
+  const { dropCardId, dropListId, startCardId, botBlock, topBlock, cardDropPosition, listPseudoBlock } =
+    useAppSelector(selectDragAndDropData);
 
   useEffect(() => {
     if (cardId && lists) {
@@ -62,8 +70,94 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
     navigate(`/board/${boardId}`);
   };
 
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
+    event.preventDefault();
+
+    const target = event.target as HTMLElement;
+    const closestCard = target.closest(`.${styles.cards}`);
+
+    if (closestCard && startCardId !== dropCardId) {
+      const rect = closestCard.getBoundingClientRect();
+      const middleY = rect.top + rect.height / 2;
+      const cursorY = event.clientY;
+
+      if (cursorY < middleY) {
+        dispatch(activateTopBlock({ dataBlock: true }));
+      } else {
+        dispatch(activateBotBlock({ dataBlock: true }));
+      }
+    }
+  };
+
+  const handleOnDrop = async (event: React.DragEvent<HTMLDivElement>): Promise<void> => {
+    const cardDragId = event.dataTransfer.getData('cardId');
+    const cardDragListId = event.dataTransfer.getData('listId');
+    const cardDragPosition = event.dataTransfer.getData('cardPosition');
+    const droppedCard = document.getElementById(`${cardDragId}C`);
+    setIsDropped(true);
+
+    if (cardDragListId && cardDragId && dropListId && boardId && cardDragPosition) {
+      let newPositionCard = null;
+      if (dropListId === Number(cardDragListId)) {
+        newPositionCard = getActiveBlockPositionOnCurrentList(
+          topBlock,
+          botBlock,
+          listPseudoBlock,
+          cardDropPosition,
+          cardDragPosition,
+          lists[dropListId].cards.length
+        );
+      } else if (dropListId !== Number(cardDragId)) {
+        newPositionCard = getActiveBlockPositionOnAnotherList(
+          topBlock,
+          botBlock,
+          listPseudoBlock,
+          cardDropPosition,
+          lists[dropListId].cards.length
+        );
+      }
+
+      if (newPositionCard && boardId) {
+        await moveCardAndThisBoard({
+          moveList: lists[dropListId],
+          nativeList: lists[Number(cardDragListId)],
+          cardId: cardDragId,
+          positionCard: newPositionCard,
+          boardId,
+        });
+        await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
+        dispatch(resetState());
+      } else if (droppedCard) {
+        droppedCard.style.display = 'flex';
+        droppedCard.style.opacity = '1';
+        dispatch(resetState());
+      }
+    } else if (droppedCard) {
+      droppedCard.style.display = 'flex';
+      droppedCard.style.opacity = '1';
+      dispatch(resetState());
+    }
+  };
+
+  const handleDragEnd = (): void => {
+    if (!isDropped && startCardId) {
+      const droppedCard = document.getElementById(`${startCardId}C`);
+      if (droppedCard) {
+        droppedCard.style.display = 'flex';
+        droppedCard.style.opacity = '1';
+      }
+      dispatch(resetState());
+    }
+    setIsDropped(false);
+  };
+
   return (
-    <div className={styles.positionTitleAndList}>
+    <div
+      className={styles.positionTitleAndList}
+      onDragOver={handleDragOver}
+      onDrop={handleOnDrop}
+      onDragEnd={handleDragEnd}
+    >
       <div className={styles.name}>
         <NameBoard nameBoard={title || ''} boardId={boardId ? Number(boardId) : null} />
       </div>

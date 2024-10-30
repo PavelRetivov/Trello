@@ -29,7 +29,6 @@ function ChoseBoards({ setBoardLists, setBoardId, setList }: choseBoardProps): J
     setList(null);
     setIsOpenInputBorder(false);
     setSelectedItemNameBoard(title);
-    console.log('board', boardList);
   };
 
   const toggleDropDownBoards = (): void => {

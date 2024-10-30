@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import IList from '../../../../interface/IDataList';
 import Card from './card/card';
 import styles from '../../../../styles/pageBoardStyle.module.scss';
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import { deleteListInBoardThunk, getListsBoardByIdServiceThunk, selectBoardList } from '../../../../module/board';
+import { deleteListInBoardThunk, selectBoardList } from '../../../../module/board';
 import AddNewCard from './addNewCard/AddNewCard';
 import ListName from './listName/ListName';
-import { deleteCardInList, postCardInList, putPositionCard } from '../../../../services/Services';
-import ICard from '../../../../interface/IDataCard';
+import { putPositionCard } from '../../../../services/Services';
+import {
+  activateListPseudoBlock,
+  setCardDropPosition,
+  setDropCardId,
+  setDropListId,
+} from '../../../../module/dragAndDrop/dragAndDropSlice.slice';
+import { selectDropListId, selectListPseudoBlock } from '../../../../module/dragAndDrop';
 
 interface listProps {
   list: IList;
@@ -18,8 +24,10 @@ interface listProps {
 function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
   const { id, title, cards, position } = list;
   const dispatch = useAppDispatch();
-  const [isVisibleBlock, setIsVisibleBlock] = useState(false);
   const lists = useAppSelector(selectBoardList);
+  const dropListId = useAppSelector(selectDropListId);
+  const pseudoBlock = useAppSelector(selectListPseudoBlock);
+  const liRef = useRef<HTMLLIElement>(null);
 
   const deleteList = async (): Promise<void> => {
     if (idBoard) {
@@ -53,60 +61,31 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
     }
   };
 
-  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>): void => {
-    const targetElement = event.target as HTMLElement;
-    const parentElement = targetElement.closest(`.${styles.cards}`);
-    if (parentElement) {
-      setIsVisibleBlock(false);
-    } else {
-      setIsVisibleBlock(true);
-    }
-  };
-
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>): void => {
-    const targetElement = event.target as HTMLElement;
-    const parentElement = targetElement.closest(`.${styles.cards}`);
-    if (!event.currentTarget.contains(event.relatedTarget as Node) || parentElement) {
-      setIsVisibleBlock(false);
-    }
-  };
-
-  const handleDrop = async (event: React.DragEvent<HTMLDivElement>): Promise<void> => {
+  const handleDragOver = (event: React.DragEvent<HTMLLIElement>): void => {
     event.preventDefault();
-    if (isVisibleBlock && idBoard) {
-      const dataCard = event.dataTransfer.getData('card');
-      const idListAnotherCard = Number(event.dataTransfer.getData('idList'));
-      const parseCard: ICard = JSON.parse(dataCard);
-
-      await deleteCardInList(idBoard, parseCard.id);
-      if (id === idListAnotherCard) {
-        await updatePositionCardHandleDelete(parseCard.id);
-      } else {
-        await updatePositionCardHandleDelete(parseCard.id, true, idListAnotherCard);
-      }
-      await postCardInList({
-        idBoard,
-        dataPost: { title: parseCard.title, listId: id, position: cards.length + 1 },
-      });
-    }
-    await dispatch(getListsBoardByIdServiceThunk(Number(idBoard)));
-
-    setIsVisibleBlock(false);
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
+  const handleDragEnter = (event: React.DragEvent<HTMLLIElement>): void => {
     event.preventDefault();
+
+    if (dropListId !== id) {
+      dispatch(setDropListId({ id }));
+      dispatch(setDropCardId({ id: null }));
+      dispatch(setCardDropPosition({ position: null }));
+      dispatch(activateListPseudoBlock({ dataBlock: true }));
+    }
+  };
+
+  const checkPseudoBlock = (): boolean => {
+    if (pseudoBlock && list.id === dropListId) {
+      return true;
+    }
+    return false;
   };
 
   return (
-    <li className={styles.listSetting}>
-      <div
-        className={styles.listStyle}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
+    <li className={styles.listSetting} onDragOver={handleDragOver} onDragEnter={handleDragEnter} ref={liRef}>
+      <div className={styles.listStyle}>
         <button className={styles.buttonDeleteList} onClick={deleteList}>
           delete
         </button>
@@ -120,7 +99,7 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
               updatePositionCardHandleDelete={updatePositionCardHandleDelete}
             />
           ))}
-          {isVisibleBlock && <div>helloPeople</div>}
+          {checkPseudoBlock() && <div className={styles.pseudoCard} />}
         </div>
         <AddNewCard idList={id} position={cards.length + 1} />
       </div>

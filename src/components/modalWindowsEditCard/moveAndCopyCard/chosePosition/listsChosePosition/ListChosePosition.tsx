@@ -8,8 +8,6 @@ interface listsChosePositionProps {
 }
 
 function ListsChosePosition({ maxPos, filter, handleItemPosition }: listsChosePositionProps): JSX.Element {
-  console.log('maxPos', maxPos);
-
   return (
     <ul className={styles.chosePosition}>
       {maxPos ? (

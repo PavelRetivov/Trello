@@ -20,11 +20,8 @@ function DescriptionCard({ description, listId }: descriptionCardProps): JSX.Ele
   const areaTextRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dispatch = useAppDispatch();
-  console.log('textDescription', textDescription);
 
-  const handleSubmit = async (): Promise<void> => {
-    console.log('lalala');
-  };
+  const handleSubmit = async (): Promise<void> => {};
   const addDescription = async (): Promise<void> => {
     if (boardId && cardId && listId && textDescription !== description) {
       const result = await putDescriptionCard(boardId, cardId, textDescription, listId);
@@ -41,7 +38,6 @@ function DescriptionCard({ description, listId }: descriptionCardProps): JSX.Ele
       setIsEditText(true);
     } else {
       setIsEditText(false);
-      console.log('its Ok');
     }
   };
 

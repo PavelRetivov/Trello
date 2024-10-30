@@ -24,7 +24,6 @@ const modalEditCardSlice = createSlice({
     },
     updateTitleCard: (state, action: PayloadAction<{ newTitle: string }>) => {
       if (state.modalCard?.title) state.modalCard.title = action.payload.newTitle;
-      console.log('title Name UPDATE');
     },
     updateDescription: (state, action: PayloadAction<{ description: string }>) => {
       if (state.modalCard) state.modalCard.description = action.payload.description;

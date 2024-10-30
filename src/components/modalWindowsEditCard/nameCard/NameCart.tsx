@@ -48,7 +48,6 @@ function NameCard({ title, cardId, listId }: nameCardProps): JSX.Element {
 
   const closeInputEditCard = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
-    console.log('parentElement', target.parentElement);
 
     if (target.closest(`.${styles.nameCard}`)) {
       console.log('hz');

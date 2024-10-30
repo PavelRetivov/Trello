@@ -127,7 +127,8 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
         });
         await dispatch(getListsBoardByIdServiceThunk(Number(boardId)));
         dispatch(resetState());
-      } else if (droppedCard) {
+      }
+      if (droppedCard) {
         droppedCard.style.display = 'flex';
         droppedCard.style.opacity = '1';
         dispatch(resetState());

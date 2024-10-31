@@ -76,8 +76,6 @@ function MoveAndCopyCard({
         await dispatch(getBoardByIdThunk(Number(boardId)));
         closeMoveAndCopyCardWindows();
       }
-    } else {
-      console.log('no infa');
     }
   };
 
@@ -97,8 +95,6 @@ function MoveAndCopyCard({
         await dispatch(getBoardByIdThunk(Number(boardId)));
         closeMoveAndCopyCardWindows();
       }
-    } else {
-      console.log('copynoInfa');
     }
   };
   return (

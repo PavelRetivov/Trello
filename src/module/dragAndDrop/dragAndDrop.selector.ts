@@ -1,10 +1,10 @@
 import { AppState } from '../../store';
 import { dragAndDropCardProps } from './dragAndDropSlice.slice';
 
-export const selectTopBlock = (state: AppState): boolean => state.dragAndDropReducer.topBlock;
-export const selectBotBlock = (state: AppState): boolean => state.dragAndDropReducer.botBlock;
-export const selectListPseudoBlock = (state: AppState): boolean => state.dragAndDropReducer.listPseudoBlock;
+export const selectCardTopIndicatorBlock = (state: AppState): boolean => state.dragAndDropReducer.cardTopIndicatorBlock;
+export const selectCardBotIndicatorBlock = (state: AppState): boolean => state.dragAndDropReducer.cardBotIndicatorBlock;
+export const selectListIndicatorBlock = (state: AppState): boolean => state.dragAndDropReducer.listIndicatorBlock;
 export const selectDropCardId = (state: AppState): number | null => state.dragAndDropReducer.dropCardId;
-export const selectStartCardId = (state: AppState): number | null => state.dragAndDropReducer.startCardId;
+export const selectStartCardId = (state: AppState): number | null => state.dragAndDropReducer.dragCardId;
 export const selectDropListId = (state: AppState): number | null => state.dragAndDropReducer.dropListId;
 export const selectDragAndDropData = (state: AppState): dragAndDropCardProps => state.dragAndDropReducer;

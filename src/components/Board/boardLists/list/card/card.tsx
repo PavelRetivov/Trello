@@ -11,7 +11,11 @@ import {
   setDropListId,
   setStartCardId,
 } from '../../../../../module/dragAndDrop/dragAndDropSlice.slice';
-import { selectBotBlock, selectDropCardId, selectTopBlock } from '../../../../../module/dragAndDrop';
+import {
+  selectCardBotIndicatorBlock,
+  selectCardTopIndicatorBlock,
+  selectDropCardId,
+} from '../../../../../module/dragAndDrop';
 
 interface cardPros {
   card: ICard;
@@ -31,8 +35,8 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
   const formRef = useRef<HTMLFormElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
   const [isFocus, setIsFocus] = useState(false);
-  const isVisibleBlockTop = useAppSelector(selectTopBlock);
-  const isVisibleBlockBot = useAppSelector(selectBotBlock);
+  const isVisibleTopIndicator = useAppSelector(selectCardTopIndicatorBlock);
+  const isVisibleBotIndicator = useAppSelector(selectCardBotIndicatorBlock);
   const dropCardId = useAppSelector(selectDropCardId);
   const [isShowButtons, setIsShowButtons] = useState(false);
   const navigate = useNavigate();
@@ -88,6 +92,7 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     dispatch(setDropListId({ id: listId }));
     dispatch(setStartCardId({ id }));
     dispatch(setDropCardId({ id }));
+    event.dataTransfer.setData('dragCard/json', JSON.stringify(card));
     event.dataTransfer.setData('cardId', id.toString());
     event.dataTransfer.setData('listId', listId.toString());
     event.dataTransfer.setData('cardPosition', position.toString());
@@ -108,15 +113,15 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     }
   };
 
-  const checkTopBlock = (): boolean => {
-    if (isVisibleBlockTop && dropCardId === id) {
+  const checkTopIndicator = (): boolean => {
+    if (isVisibleTopIndicator && dropCardId === id) {
       return true;
     }
     return false;
   };
 
-  const checkBotBlock = (): boolean => {
-    if (isVisibleBlockBot && dropCardId === id) {
+  const checkBotIndicator = (): boolean => {
+    if (isVisibleBotIndicator && dropCardId === id) {
       return true;
     }
     return false;
@@ -129,7 +134,7 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
   return (
     <div
       id={`${card.id.toString()}C`}
-      className={style.cards}
+      className={style.cardBlock}
       ref={divRef}
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}
@@ -137,7 +142,7 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
       onDrag={handleOnDrag}
       draggable
     >
-      {checkTopBlock() && <div className={style.pseudoCard} />}
+      {checkTopIndicator() && <div className={style.pseudoCard} />}
 
       <form
         className={style.card}
@@ -170,7 +175,7 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
           </button>
         </div>
       </form>
-      {checkBotBlock() && <div className={style.pseudoCard} />}
+      {checkBotIndicator() && <div className={style.pseudoCard} />}
     </div>
   );
 }

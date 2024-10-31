@@ -65,9 +65,7 @@ const ModalWindowsEditCard = ({
 
   const closeModalWindowsMoveCardInAnotherPlace = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
-    if (target.closest(`.${styles.moveCardInAnotherPlace}`)) {
-      console.log('hz6');
-    } else {
+    if (!target.closest(`.${styles.moveCardInAnotherPlace}`)) {
       setIsOpenAction(false);
       setIsCopyCard(false);
       setIsMoveCard(false);
@@ -77,9 +75,7 @@ const ModalWindowsEditCard = ({
   const closeModalWindowsEditCard = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
 
-    if (target.closest(`.${styles.windowsEditCard}`)) {
-      console.log('hz5');
-    } else {
+    if (!target.closest(`.${styles.windowsEditCard}`)) {
       closeModalWindows();
     }
   };

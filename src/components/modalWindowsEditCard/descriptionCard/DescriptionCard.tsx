@@ -49,14 +49,6 @@ function DescriptionCard({ description, listId }: descriptionCardProps): JSX.Ele
     }
   }, [isEditText, areaTextRef]);
 
-  /* not working how need */
-  // const acceptEditDescription = async (event: React.KeyboardEvent): Promise<void> => {
-  //   event.stopPropagation();
-  //   if (event.key === 'Enter') {
-  //     await addDescription();
-  //   }
-  // };
-
   const setText = (event: React.FormEvent<HTMLTextAreaElement>): void => {
     event.stopPropagation();
     setTextDescription(event.currentTarget.value);

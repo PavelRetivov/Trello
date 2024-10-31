@@ -43,8 +43,6 @@ function ChosePosition({ maxPosition, setPositionMovedCard, isThisList }: choseB
     const target = event.target as HTMLElement;
 
     if (target.closest(`.${styles.containerChosePosition}`)) {
-      console.log('hz2');
-    } else {
       setIsToggleList(false);
     }
   };

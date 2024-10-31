@@ -8,12 +8,12 @@ import AddNewCard from './addNewCard/AddNewCard';
 import ListName from './listName/ListName';
 import { putPositionCard } from '../../../../services/Services';
 import {
-  activateListPseudoBlock,
+  activateListIndicatorBlock,
   setCardDropPosition,
   setDropCardId,
   setDropListId,
 } from '../../../../module/dragAndDrop/dragAndDropSlice.slice';
-import { selectDropListId, selectListPseudoBlock } from '../../../../module/dragAndDrop';
+import { selectDropListId, selectListIndicatorBlock } from '../../../../module/dragAndDrop';
 
 interface listProps {
   list: IList;
@@ -26,7 +26,7 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
   const dispatch = useAppDispatch();
   const lists = useAppSelector(selectBoardList);
   const dropListId = useAppSelector(selectDropListId);
-  const pseudoBlock = useAppSelector(selectListPseudoBlock);
+  const dropIndicatorList = useAppSelector(selectListIndicatorBlock);
   const liRef = useRef<HTMLLIElement>(null);
 
   const deleteList = async (): Promise<void> => {
@@ -72,12 +72,12 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
       dispatch(setDropListId({ id }));
       dispatch(setDropCardId({ id: null }));
       dispatch(setCardDropPosition({ position: null }));
-      dispatch(activateListPseudoBlock({ dataBlock: true }));
+      dispatch(activateListIndicatorBlock({ dataBlock: true }));
     }
   };
 
-  const checkPseudoBlock = (): boolean => {
-    if (pseudoBlock && list.id === dropListId) {
+  const checkDropIndicatorList = (): boolean => {
+    if (dropIndicatorList && list.id === dropListId) {
       return true;
     }
     return false;
@@ -99,7 +99,7 @@ function List({ list, idBoard, updatePosition }: listProps): JSX.Element {
               updatePositionCardHandleDelete={updatePositionCardHandleDelete}
             />
           ))}
-          {checkPseudoBlock() && <div className={styles.pseudoCard} />}
+          {checkDropIndicatorList() && <div className={styles.pseudoCard} />}
         </div>
         <AddNewCard idList={id} position={cards.length + 1} />
       </div>

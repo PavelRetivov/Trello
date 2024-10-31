@@ -1,22 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface dragAndDropCardProps {
-  topBlock: boolean;
-  botBlock: boolean;
-  listPseudoBlock: boolean;
+  cardTopIndicatorBlock: boolean;
+  cardBotIndicatorBlock: boolean;
+  listIndicatorBlock: boolean;
   dropCardId: number | null;
+  dragCardId: number | null;
   dropListId: number | null;
-  startCardId: number | null;
   cardDropPosition: number | null;
 }
 
 const initialState: dragAndDropCardProps = {
-  topBlock: false,
-  botBlock: false,
-  listPseudoBlock: false,
+  cardTopIndicatorBlock: false,
+  cardBotIndicatorBlock: false,
+  listIndicatorBlock: false,
   dropCardId: null,
   dropListId: null,
-  startCardId: null,
+  dragCardId: null,
   cardDropPosition: null,
 };
 
@@ -24,23 +24,23 @@ const dragAndDropCardSlice = createSlice({
   name: 'dragAndDropCard',
   initialState,
   reducers: {
-    activateTopBlock: (state, active: PayloadAction<{ dataBlock: boolean }>) => {
-      state.topBlock = active.payload.dataBlock;
-      state.botBlock = false;
-      state.listPseudoBlock = false;
+    activateCardTopIndicatorBlock: (state, active: PayloadAction<{ dataBlock: boolean }>) => {
+      state.cardTopIndicatorBlock = active.payload.dataBlock;
+      state.cardBotIndicatorBlock = false;
+      state.listIndicatorBlock = false;
     },
-    activateBotBlock: (state, active: PayloadAction<{ dataBlock: boolean }>) => {
-      state.botBlock = active.payload.dataBlock;
-      state.topBlock = false;
-      state.listPseudoBlock = false;
+    activateCardBotIndicatorBlock: (state, active: PayloadAction<{ dataBlock: boolean }>) => {
+      state.cardBotIndicatorBlock = active.payload.dataBlock;
+      state.cardTopIndicatorBlock = false;
+      state.listIndicatorBlock = false;
     },
-    activateListPseudoBlock: (state, action: PayloadAction<{ dataBlock: boolean }>) => {
-      state.listPseudoBlock = action.payload.dataBlock;
-      state.topBlock = false;
-      state.botBlock = false;
+    activateListIndicatorBlock: (state, action: PayloadAction<{ dataBlock: boolean }>) => {
+      state.listIndicatorBlock = action.payload.dataBlock;
+      state.cardTopIndicatorBlock = false;
+      state.cardBotIndicatorBlock = false;
     },
     setStartCardId: (state, action: PayloadAction<{ id: number | null }>) => {
-      state.startCardId = action.payload.id;
+      state.dragCardId = action.payload.id;
     },
     setDropCardId: (state, active: PayloadAction<{ id: number | null }>) => {
       state.dropCardId = active.payload.id;
@@ -51,27 +51,27 @@ const dragAndDropCardSlice = createSlice({
     setCardDropPosition: (state, action: PayloadAction<{ position: number | null }>) => {
       state.cardDropPosition = action.payload.position;
     },
-    resetState: (state) => {
-      state.botBlock = false;
-      state.topBlock = false;
-      state.listPseudoBlock = false;
+    resetStateDragAndDrop: (state) => {
+      state.cardBotIndicatorBlock = false;
+      state.cardTopIndicatorBlock = false;
+      state.listIndicatorBlock = false;
       state.cardDropPosition = null;
       state.dropCardId = null;
       state.dropListId = null;
-      state.startCardId = null;
+      state.dragCardId = null;
     },
   },
 });
 
 export const {
-  activateTopBlock,
-  activateBotBlock,
-  activateListPseudoBlock,
+  activateCardTopIndicatorBlock,
+  activateCardBotIndicatorBlock,
+  activateListIndicatorBlock,
   setDropCardId,
   setStartCardId,
   setDropListId,
   setCardDropPosition,
-  resetState,
+  resetStateDragAndDrop,
 } = dragAndDropCardSlice.actions;
 
 export default dragAndDropCardSlice.reducer;

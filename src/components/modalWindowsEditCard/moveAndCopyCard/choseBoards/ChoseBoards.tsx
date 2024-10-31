@@ -39,8 +39,6 @@ function ChoseBoards({ setBoardLists, setBoardId, setList }: choseBoardProps): J
   const closeListsBoardName = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
     if (target.closest(`.${styles.containerChoseBoards}`)) {
-      console.log('hz4');
-    } else {
       setIsOpenInputBorder(false);
     }
   };

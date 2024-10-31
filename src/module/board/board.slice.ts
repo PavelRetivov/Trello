@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import IList from '../../interface/IDataList';
 import { getBoardByIdThunk, getListsBoardByIdServiceThunk, putBoardNameThunk } from './board.thunks';
 
@@ -17,7 +17,12 @@ const initialState: stateBoard = {
 const boardSlice = createSlice({
   name: 'board',
   initialState,
-  reducers: {},
+  reducers: {
+    updateCardsInList: (state, action: PayloadAction<{ list: IList }>) => {
+      const idList = action.payload.list.id;
+      state.lists[idList] = action.payload.list;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getBoardByIdThunk.fulfilled, (state, action) => {
@@ -45,5 +50,7 @@ const boardSlice = createSlice({
       });
   },
 });
+
+export const { updateCardsInList } = boardSlice.actions;
 
 export default boardSlice.reducer;

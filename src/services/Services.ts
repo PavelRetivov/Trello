@@ -15,20 +15,26 @@ export const getDataBoardsByHome = async (): Promise<IDataBoard[] | null> => {
 };
 
 export const deleteBoardInBoardsService = async (idBoard: number): Promise<void> => {
-  const request = await api.delete(`/board/${idBoard}`);
-  console.log(request);
+  try {
+    await api.delete(`/board/${idBoard}`);
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export const postBoardHome = async (title: string, custom: { background: string }): Promise<void> => {
-  const request = await api
-    .post('/board', {
-      title,
-      custom,
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  console.log(request);
+  try {
+    await api
+      .post('/board', {
+        title,
+        custom,
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export const getBoardByIdService = async (idBoard: number): Promise<IDataStateBoard> => {
@@ -37,19 +43,26 @@ export const getBoardByIdService = async (idBoard: number): Promise<IDataStateBo
 };
 
 export const putBoardName = async (idBoard: number, newTitle: string): Promise<string> => {
-  const response = await api.put(`/board/${idBoard}`, {
-    title: newTitle,
-  });
-  console.log(response);
-  return newTitle;
+  try {
+    await api.put(`/board/${idBoard}`, {
+      title: newTitle,
+    });
+    return newTitle;
+  } catch (error) {
+    console.log(`error: ${error}`);
+    return 'error';
+  }
 };
 
 export const postListInBoardById = async (idBoard: string, title: string, position: number): Promise<void> => {
-  const response = await api.post(`/board/${idBoard}/list`, {
-    title,
-    position,
-  });
-  console.log(response);
+  try {
+    await api.post(`/board/${idBoard}/list`, {
+      title,
+      position,
+    });
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export const getListsBoardByIdService = async (idBoard: number): Promise<IList[]> => {
@@ -58,8 +71,11 @@ export const getListsBoardByIdService = async (idBoard: number): Promise<IList[]
 };
 
 export const deleteListInBoard = async (idBoard: string, idList: number): Promise<void> => {
-  const request = await api.delete(`/board/${idBoard}/list/${idList}`);
-  console.log(request);
+  try {
+    await api.delete(`/board/${idBoard}/list/${idList}`);
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export interface argsPost {
@@ -74,27 +90,36 @@ export interface argsPost {
 }
 
 export const postCardInList = async ({ idBoard, dataPost }: argsPost): Promise<void> => {
-  const { title, listId, position, description, custom } = dataPost;
-  const request = await api.post(`/board/${idBoard}/card`, {
-    title,
-    list_id: listId,
-    position,
-    description: description || '',
-    custom,
-  });
-  console.log(request);
+  try {
+    const { title, listId, position, description, custom } = dataPost;
+    await api.post(`/board/${idBoard}/card`, {
+      title,
+      list_id: listId,
+      position,
+      description: description || '',
+      custom,
+    });
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export const deleteCardInList = async (idBoard: string, idCard: number): Promise<void> => {
-  const request = await api.delete(`/board/${idBoard}/card/${idCard}`);
-  console.log(request);
+  try {
+    await api.delete(`/board/${idBoard}/card/${idCard}`);
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export const putListNameInBoard = async (boardId: string, listId: number, title: string): Promise<void> => {
-  const request = await api.put(`/board/${boardId}/list/${listId}`, {
-    title,
-  });
-  console.log(request);
+  try {
+    await api.put(`/board/${boardId}/list/${listId}`, {
+      title,
+    });
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export const putCardNameInList = async (
@@ -103,16 +128,20 @@ export const putCardNameInList = async (
   cardId: number,
   nameCard: string
 ): Promise<void | string> => {
-  const url = `/board/${boardId}/card/${cardId}`;
-  const request = await api.put(url, {
-    title: nameCard,
-    list_id: listId,
-  });
-  console.log('update information', request);
-  if (request && 'result' in request && typeof request.result === 'string') {
-    return request.result;
+  try {
+    const url = `/board/${boardId}/card/${cardId}`;
+    const request = await api.put(url, {
+      title: nameCard,
+      list_id: listId,
+    });
+    if (request && 'result' in request && typeof request.result === 'string') {
+      return request.result;
+    }
+    return undefined;
+  } catch (error) {
+    console.log(`error: ${error}`);
+    return undefined;
   }
-  return undefined;
 };
 
 interface putPositionListProps {
@@ -121,9 +150,12 @@ interface putPositionListProps {
 }
 
 export const putPositionList = async (boardId: string, newPositionList: putPositionListProps[]): Promise<void> => {
-  const url = `/board/${boardId}/list`;
-  const request = await api.put(url, newPositionList);
-  console.log('putPositionList', request);
+  try {
+    const url = `/board/${boardId}/list`;
+    await api.put(url, newPositionList);
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 interface putPositionCardProps {
@@ -132,11 +164,12 @@ interface putPositionCardProps {
   list_id: number;
 }
 export const putPositionCard = async (boardId: string, newPositionCard: putPositionCardProps[]): Promise<void> => {
-  const url = `/board/${boardId}/card`;
-  console.log('url', url);
-  console.log('newPositionCard', newPositionCard);
-  const request = await api.put(url, newPositionCard);
-  console.log(request);
+  try {
+    const url = `/board/${boardId}/card`;
+    await api.put(url, newPositionCard);
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
 };
 
 export const putDescriptionCard = async (
@@ -145,15 +178,18 @@ export const putDescriptionCard = async (
   description: string,
   listId: number
 ): Promise<void | string> => {
-  const ulr = `/board/${boardId}/card/${cardId}`;
-  const request = await api.put(ulr, {
-    description,
-    list_id: listId,
-  });
-  console.log('update description', request);
-  if ('result' in request && typeof request.result === 'string') {
-    console.log(request.result);
-    return request.result;
+  try {
+    const ulr = `/board/${boardId}/card/${cardId}`;
+    const request = await api.put(ulr, {
+      description,
+      list_id: listId,
+    });
+    if ('result' in request && typeof request.result === 'string') {
+      return request.result;
+    }
+    return undefined;
+  } catch (error) {
+    console.log(`error: ${error}`);
+    return undefined;
   }
-  return undefined;
 };

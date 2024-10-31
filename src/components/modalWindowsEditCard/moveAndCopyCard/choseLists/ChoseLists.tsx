@@ -35,8 +35,6 @@ function ChoseLists({ boardLists, setList, listId }: choseListProps): JSX.Elemen
     const target = event.target as HTMLElement;
 
     if (target.closest(`.${styles.containerChoseLists}`)) {
-      console.log('hz3');
-    } else {
       setIsOpenInputList(false);
     }
   };

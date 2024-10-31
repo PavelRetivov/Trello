@@ -105,7 +105,7 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
       const middleY = rect.top + rect.height / 2; // get middleY block
       const cursorY = event.clientY; // get position cursorY
 
-      if (cursorY < middleY) {
+      if (cursorY > middleY) {
         dispatch(activateCardTopIndicatorBlock({ dataBlock: true }));
       } else {
         dispatch(activateCardBotIndicatorBlock({ dataBlock: true }));

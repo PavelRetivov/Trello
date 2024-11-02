@@ -48,6 +48,8 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
     listIndicatorBlock,
   } = useAppSelector(selectDragAndDropData);
 
+  console.log('lists', lists);
+
   /**
    * if i have cardId means than new moment need open modal edit card
    */

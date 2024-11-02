@@ -91,8 +91,11 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     };
   }, [isFocus, boardId, dispatch, listId, id, title]);
 
-  const openEditCard = (): void => {
-    navigate(`/board/${boardId}/card/${id}`);
+  const openEditCard = (event: React.FormEvent<HTMLFormElement>): void => {
+    const target = event.target as HTMLElement;
+    if (!target.closest(`.${style.buttons}`)) {
+      navigate(`/board/${boardId}/card/${id}`);
+    }
   };
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {

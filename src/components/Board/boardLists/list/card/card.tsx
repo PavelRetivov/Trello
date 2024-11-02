@@ -6,7 +6,10 @@ import { useAppDispatch, useAppSelector } from '../../../../../store';
 import { getListsBoardByIdServiceThunk } from '../../../../../module/board';
 import style from '../../../../../styles/pageBoardStyle.module.scss';
 import {
+  resetStateDragAndDrop,
   setCardDropPosition,
+  setDragElementHide,
+  setDragStart,
   setDropCardId,
   setDropListId,
   setStartCardId,
@@ -14,6 +17,8 @@ import {
 import {
   selectCardBotIndicatorBlock,
   selectCardTopIndicatorBlock,
+  selectDragEnd,
+  selectDragStart,
   selectDropCardId,
 } from '../../../../../module/dragAndDrop';
 
@@ -37,6 +42,8 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
   const [isFocus, setIsFocus] = useState(false);
   const isVisibleTopIndicator = useAppSelector(selectCardTopIndicatorBlock);
   const isVisibleBotIndicator = useAppSelector(selectCardBotIndicatorBlock);
+  const isDragStart = useAppSelector(selectDragStart);
+  const isDragEnd = useAppSelector(selectDragEnd);
   const dropCardId = useAppSelector(selectDropCardId);
   const [isShowButtons, setIsShowButtons] = useState(false);
   const navigate = useNavigate();
@@ -92,6 +99,7 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
     dispatch(setDropListId({ id: listId }));
     dispatch(setStartCardId({ id }));
     dispatch(setDropCardId({ id }));
+    dispatch(setDragStart({ isDragStart: true }));
     event.dataTransfer.setData('dragCard/json', JSON.stringify(card));
     event.dataTransfer.setData('cardId', id.toString());
     event.dataTransfer.setData('listId', listId.toString());
@@ -110,6 +118,15 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
       divRef.current.style.opacity = '0.5';
     } else if (divRef.current) {
       divRef.current.style.display = 'none';
+      dispatch(setDragElementHide({ isDragElementHide: true }));
+    }
+  };
+
+  const handleDragEnd = (): void => {
+    if (isDragStart && !isDragEnd && divRef.current) {
+      divRef.current.style.opacity = '1';
+      divRef.current.style.display = 'flex';
+      dispatch(resetStateDragAndDrop());
     }
   };
 
@@ -140,6 +157,7 @@ function Card({ card, listId, updatePositionCardHandleDelete }: cardPros): JSX.E
       onDragStart={handleDragStart}
       onDragEnter={handleDragEnter}
       onDrag={handleOnDrag}
+      onDragEnd={handleDragEnd}
       draggable
     >
       {checkTopIndicator() && <div className={style.pseudoCard} />}

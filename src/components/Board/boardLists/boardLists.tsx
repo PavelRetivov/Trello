@@ -15,8 +15,9 @@ import {
   activateCardBotIndicatorBlock,
   activateCardTopIndicatorBlock,
   resetStateDragAndDrop,
+  setDragEnd,
 } from '../../../module/dragAndDrop/dragAndDropSlice.slice';
-import { selectDragAndDropData } from '../../../module/dragAndDrop';
+import { selectDragAndDropData, selectDragElementHide } from '../../../module/dragAndDrop';
 import {
   getActiveBlockPositionOnAnotherList,
   getActiveBlockPositionOnCurrentList,
@@ -32,11 +33,11 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
   const navigate = useNavigate();
 
   const [targetListId, setTargetListId] = useState<number | null>(null);
-  const [isDropped, setIsDropped] = useState(false);
 
   const dispatch = useAppDispatch();
   const { title, custom, lists } = useSelector(selectBoard);
   const { isOpen, modalCard } = useAppSelector(selectDataEditCard);
+  const dragElementHide = useAppSelector(selectDragElementHide);
   const {
     dropCardId,
     dropListId,
@@ -104,11 +105,12 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
       const rect = closestCard.getBoundingClientRect(); // get size and position element
       const middleY = rect.top + rect.height / 2; // get middleY block
       const cursorY = event.clientY; // get position cursorY
-
-      if (cursorY > middleY) {
-        dispatch(activateCardTopIndicatorBlock({ dataBlock: true }));
-      } else {
-        dispatch(activateCardBotIndicatorBlock({ dataBlock: true }));
+      if (dragElementHide) {
+        if (cursorY > middleY) {
+          dispatch(activateCardTopIndicatorBlock({ dataBlock: true }));
+        } else {
+          dispatch(activateCardBotIndicatorBlock({ dataBlock: true }));
+        }
       }
     }
   };
@@ -125,9 +127,10 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
     const cardDragId = event.dataTransfer.getData('cardId');
     const cardDragListId = event.dataTransfer.getData('listId');
     const cardDragPosition = event.dataTransfer.getData('cardPosition');
-    const droppedCard = document.getElementById(`${cardDragId}C`);
-    setIsDropped(true);
 
+    if (Number(cardDragListId) !== dropListId) {
+      dispatch(setDragEnd({ isDragEnd: true }));
+    }
     if (cardDragListId && cardDragId && dropListId && boardId && cardDragPosition) {
       let newPositionCard = null;
       if (dropListId === Number(cardDragListId)) {
@@ -162,42 +165,15 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
         } else {
           dispatch(updateCardsInList({ list: updateListOrLists }));
         }
-        dispatch(resetStateDragAndDrop());
+        if (Number(cardDragListId) !== dropListId) {
+          dispatch(resetStateDragAndDrop());
+        }
       }
-      // turn everything back if do nothing
-      if (droppedCard) {
-        droppedCard.style.display = 'flex';
-        droppedCard.style.opacity = '1';
-        dispatch(resetStateDragAndDrop());
-      }
-    } // turn everything back if card no move
-    else if (droppedCard) {
-      droppedCard.style.display = 'flex';
-      droppedCard.style.opacity = '1';
-      dispatch(resetStateDragAndDrop());
     }
-  };
-
-  const handleDragEnd = (): void => {
-    // if drop no happened reset data
-    if (!isDropped && dragCardId) {
-      const droppedCard = document.getElementById(`${dragCardId}C`);
-      if (droppedCard) {
-        droppedCard.style.display = 'flex';
-        droppedCard.style.opacity = '1';
-      }
-      dispatch(resetStateDragAndDrop());
-    }
-    setIsDropped(false);
   };
 
   return (
-    <div
-      className={styles.positionTitleAndList}
-      onDragOver={handleDragOver}
-      onDrop={handleOnDrop}
-      onDragEnd={handleDragEnd}
-    >
+    <div className={styles.positionTitleAndList} onDragOver={handleDragOver} onDrop={handleOnDrop}>
       <div className={styles.name}>
         <NameBoard nameBoard={title || ''} boardId={boardId ? Number(boardId) : null} />
       </div>

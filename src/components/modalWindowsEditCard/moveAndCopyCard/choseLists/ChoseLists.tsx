@@ -34,7 +34,7 @@ function ChoseLists({ boardLists, setList, listId }: choseListProps): JSX.Elemen
   const closeListsName = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
 
-    if (target.closest(`.${styles.containerChoseLists}`)) {
+    if (!target.closest(`.${styles.containerChoseLists}`)) {
       setIsOpenInputList(false);
     }
   };

@@ -7,4 +7,7 @@ export const selectListIndicatorBlock = (state: AppState): boolean => state.drag
 export const selectDropCardId = (state: AppState): number | null => state.dragAndDropReducer.dropCardId;
 export const selectStartCardId = (state: AppState): number | null => state.dragAndDropReducer.dragCardId;
 export const selectDropListId = (state: AppState): number | null => state.dragAndDropReducer.dropListId;
+export const selectDragStart = (state: AppState): boolean => state.dragAndDropReducer.dragStart;
+export const selectDragEnd = (state: AppState): boolean => state.dragAndDropReducer.dragEnd;
+export const selectDragElementHide = (state: AppState): boolean => state.dragAndDropReducer.dragElementHide;
 export const selectDragAndDropData = (state: AppState): dragAndDropCardProps => state.dragAndDropReducer;

@@ -11,6 +11,9 @@ import { getBoardByIdThunk, selectBoardList } from '../../../module/board';
 import { moveCardAndNewBoard } from '../../../utils/cardUntils/moveCardAndMewBoard';
 import { moveCardAndThisBoard } from '../../../utils/cardUntils/moveCardAndThisBoard';
 import { postCardInList } from '../../../services/Services';
+import EditCardNameOnCopy from './editCardNameOnCopy/EditCardNameOnCopy';
+
+const BASE_FONT_SIZE = 16;
 
 interface moveCardInAnotherPlaceProps {
   x: number;
@@ -38,9 +41,11 @@ function MoveAndCopyCard({
   const [boardIdMove, setBoardIdMove] = useState<string | null>(null);
   const [positionCard, setPositionCard] = useState<number | null>(null);
   const [isThisList, setIsThisList] = useState(false);
+  const [nameCard, setNameCard] = useState('');
   const { boardId, cardId } = useParams();
   const dispatch = useAppDispatch();
   const lists = useAppSelector(selectBoardList);
+  const [restPosition, setResetPosition] = useState(false);
 
   useEffect(() => {
     if (moveList && moveList.id === nativeListId) {
@@ -48,7 +53,14 @@ function MoveAndCopyCard({
     } else {
       setIsThisList(false);
     }
+    setResetPosition(true);
   }, [moveList, nativeListId]);
+
+  useEffect(() => {
+    if (modalCard?.title) {
+      setNameCard(modalCard.title);
+    }
+  }, [modalCard]);
 
   const moved = async (): Promise<void> => {
     if (boardId && nativeListId && boardIdMove && cardId && positionCard && moveList) {
@@ -85,7 +97,7 @@ function MoveAndCopyCard({
         await postCardInList({
           idBoard: boardIdMove,
           dataPost: {
-            title: modalCard.title,
+            title: nameCard,
             listId: moveList.id,
             position: positionCard,
             description: modalCard.description,
@@ -97,10 +109,33 @@ function MoveAndCopyCard({
       }
     }
   };
+
+  const calculatedCoordinateX = (): number => {
+    const centerWindows = window.innerWidth / 2;
+    const widthBlockRem = window.innerWidth > 1024 ? 19 : 10;
+    if (centerWindows < x) {
+      return x - widthBlockRem * BASE_FONT_SIZE;
+    }
+    return x;
+  };
+
+  const calculatedCoordinateY = (): number => {
+    const centerWindows = window.innerHeight / 2;
+    const heightBlockRem = window.innerHeight > 1024 ? 15 : 8;
+    if (centerWindows < y) {
+      return y - heightBlockRem * BASE_FONT_SIZE;
+    }
+    return y;
+  };
+
   return (
-    <div className={styles.moveCardInAnotherPlace} style={{ left: x, top: y }}>
+    <div
+      className={styles.moveCardInAnotherPlace}
+      style={{ left: calculatedCoordinateX(), top: calculatedCoordinateY() }}
+    >
       {isMoveCard && <h3 className={styles.activeName}>moved card</h3>}
       {isCopyCard && <h3 className={styles.activeName}>copy card</h3>}
+      {isCopyCard && <EditCardNameOnCopy titleCard={nameCard} setNameCard={setNameCard} />}
       <ChoseBoards setBoardLists={setBoardLists} setBoardId={setBoardIdMove} setList={setMoveList} />
       <div className={styles.containerChoseListsAndChosePosition}>
         <ChoseLists boardLists={boardLists} setList={setMoveList} listId={nativeListId} />
@@ -108,6 +143,8 @@ function MoveAndCopyCard({
           maxPosition={moveList ? moveList.cards.length : null}
           setPositionMovedCard={setPositionCard}
           isThisList={isThisList}
+          restPosition={restPosition}
+          setResetPosition={setResetPosition}
         />
       </div>
       {isMoveCard ? <button onClick={moved}>moved</button> : null}

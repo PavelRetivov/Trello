@@ -7,9 +7,17 @@ interface choseBoardsProps {
   maxPosition: number | null;
   setPositionMovedCard: (position: number) => void;
   isThisList: boolean;
+  restPosition: boolean;
+  setResetPosition: (isReset: boolean) => void;
 }
 
-function ChosePosition({ maxPosition, setPositionMovedCard, isThisList }: choseBoardsProps): JSX.Element {
+function ChosePosition({
+  maxPosition,
+  setPositionMovedCard,
+  isThisList,
+  restPosition,
+  setResetPosition,
+}: choseBoardsProps): JSX.Element {
   const [position, setPosition] = useState('');
   const [isOpenToggleList, setIsToggleList] = useState(false);
   const [filter, setFilter] = useState('');
@@ -19,6 +27,13 @@ function ChosePosition({ maxPosition, setPositionMovedCard, isThisList }: choseB
       setPosition('');
     }
   }, [maxPosition]);
+
+  useEffect(() => {
+    if (restPosition) {
+      setPosition('');
+      setResetPosition(false);
+    }
+  }, [restPosition, setResetPosition]);
 
   const onInputPosition = (event: FormEvent<HTMLInputElement>): void => {
     event.stopPropagation();
@@ -42,7 +57,7 @@ function ChosePosition({ maxPosition, setPositionMovedCard, isThisList }: choseB
   const closeListsName = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
 
-    if (target.closest(`.${styles.containerChosePosition}`)) {
+    if (!target.closest(`.${styles.containerChosePosition}`)) {
       setIsToggleList(false);
     }
   };

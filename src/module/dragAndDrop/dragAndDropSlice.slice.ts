@@ -8,6 +8,9 @@ export interface dragAndDropCardProps {
   dragCardId: number | null;
   dropListId: number | null;
   cardDropPosition: number | null;
+  dragStart: boolean;
+  dragEnd: boolean;
+  dragElementHide: boolean;
 }
 
 const initialState: dragAndDropCardProps = {
@@ -18,6 +21,9 @@ const initialState: dragAndDropCardProps = {
   dropListId: null,
   dragCardId: null,
   cardDropPosition: null,
+  dragStart: false,
+  dragEnd: false,
+  dragElementHide: false,
 };
 
 const dragAndDropCardSlice = createSlice({
@@ -51,6 +57,15 @@ const dragAndDropCardSlice = createSlice({
     setCardDropPosition: (state, action: PayloadAction<{ position: number | null }>) => {
       state.cardDropPosition = action.payload.position;
     },
+    setDragStart: (state, action: PayloadAction<{ isDragStart: boolean }>) => {
+      state.dragStart = action.payload.isDragStart;
+    },
+    setDragEnd: (state, action: PayloadAction<{ isDragEnd: boolean }>) => {
+      state.dragEnd = action.payload.isDragEnd;
+    },
+    setDragElementHide: (state, action: PayloadAction<{ isDragElementHide: boolean }>) => {
+      state.dragElementHide = action.payload.isDragElementHide;
+    },
     resetStateDragAndDrop: (state) => {
       state.cardBotIndicatorBlock = false;
       state.cardTopIndicatorBlock = false;
@@ -59,6 +74,9 @@ const dragAndDropCardSlice = createSlice({
       state.dropCardId = null;
       state.dropListId = null;
       state.dragCardId = null;
+      state.dragStart = false;
+      state.dragEnd = false;
+      state.dragElementHide = false;
     },
   },
 });
@@ -72,6 +90,9 @@ export const {
   setDropListId,
   setCardDropPosition,
   resetStateDragAndDrop,
+  setDragEnd,
+  setDragStart,
+  setDragElementHide,
 } = dragAndDropCardSlice.actions;
 
 export default dragAndDropCardSlice.reducer;

@@ -14,6 +14,13 @@ function LinkToBoard(data: { idBoard: number; title: string; custom: { backgroun
     }
   };
 
+  const checkTypeFon = (): boolean => {
+    if (background && background.startsWith('url')) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <MemoizedNavLink
       to={`/board/${idBoard.toString()}`}
@@ -22,7 +29,7 @@ function LinkToBoard(data: { idBoard: number; title: string; custom: { backgroun
       onClick={handleClick}
     >
       <div className={styles.blockImageBoard}>
-        <span className={styles.imageBoard} style={{ background }} />
+        <span className={styles.imageBoard} style={checkTypeFon() ? { backgroundImage: background } : { background }} />
       </div>
       <p className={styles.boardNameText}>{title}</p>
     </MemoizedNavLink>

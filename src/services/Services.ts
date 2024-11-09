@@ -2,6 +2,7 @@ import api from '../api/request';
 import IDataBoard from '../interface/IDataBoard';
 import IList from '../interface/IDataList';
 import { IDataStateBoard } from '../interface/IDataStateBoard';
+import { IDataLogin } from '../interface/IDataLogin';
 
 export const getDataBoardsByHome = async (): Promise<IDataBoard[] | null> => {
   try {
@@ -190,6 +191,33 @@ export const putDescriptionCard = async (
     return undefined;
   } catch (error) {
     console.log(`error: ${error}`);
+    return undefined;
+  }
+};
+
+export const addUser = async (email: string, password: string): Promise<void> => {
+  try {
+    const url = '/user';
+    const request = await api.post(url, {
+      email,
+      password,
+    });
+    console.log(request);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUser = async (email: string, password: string): Promise<IDataLogin | undefined> => {
+  try {
+    const url = '/login';
+    const request: IDataLogin = await api.post(url, {
+      email,
+      password,
+    });
+    return request;
+  } catch (error) {
+    console.log(error);
     return undefined;
   }
 };

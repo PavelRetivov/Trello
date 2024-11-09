@@ -7,7 +7,14 @@ $fon-color: linear-gradient(rgba(7, 237, 255, 1) 0%, rgba(255, 254, 144, 0.92489
   min-height: 100vh;
   background: $fon-color;
 }
-
+.exitSession {
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  transform: translate(-100%, 100%);
+  width: 6rem;
+  height: 2rem;
+}
 .headerHome {
   margin: 3rem 0 0 0;
   color: #007bff;
@@ -20,6 +27,10 @@ $fon-color: linear-gradient(rgba(7, 237, 255, 1) 0%, rgba(255, 254, 144, 0.92489
   flex-wrap: wrap;
   padding: 3rem 7rem 0 10rem;
   gap: 5rem;
+  @media (max-width: 720px) {
+    padding: 1rem;
+    gap: 1rem;
+  }
 }
 .BoardStyleInHome {
   text-decoration: none;
@@ -27,6 +38,13 @@ $fon-color: linear-gradient(rgba(7, 237, 255, 1) 0%, rgba(255, 254, 144, 0.92489
   height: 7rem;
   border-radius: 1rem;
   padding: 1rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  @media (max-width: 720px) {
+    width: 7rem;
+    height: 6rem;
+  }
   button {
     cursor: pointer;
     display: block;
@@ -84,6 +102,10 @@ $fon-color: linear-gradient(rgba(7, 237, 255, 1) 0%, rgba(255, 254, 144, 0.92489
   background-color: rgba(128, 128, 128, 0.5);
   border: none;
   border-radius: 10px;
+  @media (max-width: 720px) {
+    width: 7rem;
+    height: 3rem;
+  }
   h1 {
     padding: 0;
     margin: 0;

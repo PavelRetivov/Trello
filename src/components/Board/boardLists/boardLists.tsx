@@ -48,8 +48,6 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
     listIndicatorBlock,
   } = useAppSelector(selectDragAndDropData);
 
-  console.log('lists', lists);
-
   /**
    * if i have cardId means than new moment need open modal edit card
    */
@@ -174,12 +172,22 @@ function BoardLists(boardDataId: { boardId: string | undefined }): JSX.Element {
     }
   };
 
+  const checkFon = (): boolean => {
+    if (custom && custom.background && custom.background.startsWith('url')) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <div className={styles.positionTitleAndList} onDragOver={handleDragOver} onDrop={handleOnDrop}>
       <div className={styles.name}>
         <NameBoard nameBoard={title || ''} boardId={boardId ? Number(boardId) : null} />
       </div>
-      <div className={styles.listBlock} style={{ backgroundColor: custom?.background ? custom.background : '#ffffff' }}>
+      <div
+        className={styles.listBlock}
+        style={checkFon() ? { backgroundImage: custom?.background } : { background: custom?.background }}
+      >
         <ol className={styles.lists}>
           {Object.values(lists)?.map((list) => (
             <List key={list.id} idBoard={boardId} list={list} updatePosition={updatePositionLists} />

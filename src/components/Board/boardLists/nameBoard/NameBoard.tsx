@@ -2,6 +2,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import styles from '../../../../styles/pageBoardStyle.module.scss';
 import { useAppDispatch } from '../../../../store';
 import { putBoardNameThunk } from '../../../../module/board';
+import { fetchBoardsThunk } from '../../../../module/boards';
 
 function NameBoard(data: { nameBoard: string; boardId: number | null }): JSX.Element {
   const [isFocus, setIsFocus] = useState(false);
@@ -19,11 +20,12 @@ function NameBoard(data: { nameBoard: string; boardId: number | null }): JSX.Ele
   };
 
   useEffect(() => {
-    const handleClick = (event: MouseEvent): void => {
+    const handleClick = async (event: MouseEvent): Promise<void> => {
       if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
         setIsFocus(false);
         if (inputRef.current && inputRef.current.value.length > 1 && boardId) {
-          dispatch(putBoardNameThunk({ idBoard: boardId, newTitle: inputRef.current.value }));
+          await dispatch(putBoardNameThunk({ idBoard: boardId, newTitle: inputRef.current.value }));
+          dispatch(fetchBoardsThunk());
         }
       }
     };

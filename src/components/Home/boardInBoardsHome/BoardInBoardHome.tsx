@@ -22,11 +22,18 @@ function BoardInBoardHome({ board }: { board: IDataBoard }): JSX.Element {
     setPosition({ mousePositionX: event.clientX, mousePositionY: event.clientY });
   };
 
+  const checkFon = (): boolean => {
+    if (custom.background && custom.background.startsWith('url')) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Link
       to={`/board/${board.id.toString()}`}
       className={homeStyle.BoardStyleInHome}
-      style={{ background: custom.background }}
+      style={checkFon() ? { backgroundImage: custom.background } : { background: custom.background }}
     >
       <ButtonDeleteBoardInBoardsHome idBoard={id} />
       <h1 onMouseMove={setPositionMouseCoordinates} onMouseEnter={openToolTip} onMouseLeave={closeToolTip}>

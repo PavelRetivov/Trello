@@ -9,17 +9,24 @@ $fon-color: linear-gradient(rgba(7, 237, 255, 1) 0%, rgba(255, 254, 144, 0.92489
 }
 .exitSession {
   position: absolute;
-  top: 0%;
-  right: 0%;
-  transform: translate(-100%, 100%);
+  top: 5%;
+  right: 5%;
   width: 6rem;
   height: 2rem;
+  @media (max-width: 1024px) {
+    width: 4rem;
+    height: 1.5rem;
+  }
 }
 .headerHome {
   margin: 3rem 0 0 0;
   color: #007bff;
   padding: 0;
   font-size: 4rem;
+  @media (max-width: 1024px) {
+    font-size: 2.5rem;
+    margin-top: 4rem;
+  }
 }
 .BoardsStyleInHome {
   display: flex;

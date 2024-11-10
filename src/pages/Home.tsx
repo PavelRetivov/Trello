@@ -8,6 +8,7 @@ function Home(): JSX.Element {
 
   const handleExitSession = (): void => {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     navigate('/Login');
   };
 

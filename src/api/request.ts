@@ -52,7 +52,7 @@ instance.interceptors.response.use(
             }
           }
         } else {
-          window.location.href = '/#/login';
+          window.location.href = '/Trello/#/login';
         }
       } catch (refreshError) {
         console.log('refreshError', refreshError);
@@ -60,7 +60,7 @@ instance.interceptors.response.use(
       isRefreshing = false;
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
-      window.location.href = '/#/login';
+      window.location.href = '/Trello/#/login';
     }
     return Promise.reject(error);
   }

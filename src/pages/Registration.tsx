@@ -15,7 +15,7 @@ function Registration(): JSX.Element {
       <div className={styles.blockRegistration}>
         <h1>registration</h1>
         <RegistrationForm />
-        <footer>
+        <footer className={styles.footerAutorisation}>
           <p>you have in account</p>
           <Link to="/Login"> sign in</Link>
         </footer>

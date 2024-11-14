@@ -59,11 +59,6 @@ function ChoseBoards({ setBoardLists, setBoardId, setList }: choseBoardProps): J
 
   useCloseModalWindowsClick({ isOpen: isFocus, closeListsBoardName });
 
-  const handleBlur = (): void => {
-    console.log('blur');
-    // if(inputBoard.current) inputBoard.current.focus();
-  };
-
   return (
     <form className={styles.containerChoseBoards} ref={formRef} onSubmit={addNeedTitle}>
       <label htmlFor="">
@@ -79,7 +74,6 @@ function ChoseBoards({ setBoardLists, setBoardId, setList }: choseBoardProps): J
           onFocus={() => {
             setIsFocus(true);
           }}
-          onBlur={handleBlur}
         />
       </label>
       {isOpenInputBoard ? (

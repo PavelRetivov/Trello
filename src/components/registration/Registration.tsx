@@ -1,5 +1,6 @@
 import React, { FormEvent, useRef, useState } from 'react';
 import PasswordValidator from 'password-validator';
+import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/registrationStyle.module.scss';
 import {
   fourAndMorError,
@@ -8,7 +9,7 @@ import {
   twoError,
   zeroError,
 } from '../../utils/registerPasswordValidation/RegisterPasswordValidation';
-import { addUser } from '../../services/Services';
+import { addUser, getUser } from '../../services/Services';
 
 const schema = new PasswordValidator();
 schema
@@ -35,6 +36,11 @@ function RegistrationForm(): JSX.Element {
   const indicatorRef2 = useRef<HTMLSpanElement>(null);
   const indicatorRef3 = useRef<HTMLSpanElement>(null);
   const indicatorRef4 = useRef<HTMLSpanElement>(null);
+  const [lockPasswordImage] = useState(`${process.env.PUBLIC_URL}/passwordLock.png`);
+  const [unlockPasswordImage] = useState(`${process.env.PUBLIC_URL}/unlockPassword.png`);
+  const [isUnLockPassword, setIsUnlockPassword] = useState(false);
+  const [isUnLockRepeatPassword, setIsUnlockRepeatPassword] = useState(false);
+  const navigate = useNavigate();
 
   const checkPassword = (testText: string): number => {
     const result = schema.validate(testText, { details: true });
@@ -82,9 +88,32 @@ function RegistrationForm(): JSX.Element {
       } else {
         setNoRepeatPassword(true);
       }
-      if (validationLogin && validationPassword && parolsRepeat) {
-        await addUser(refLogin.current.value, refPassword.current.value);
+      if (!(validationLogin && validationPassword && parolsRepeat)) {
+        return;
       }
+      addUser(refLogin.current.value, refPassword.current.value).then((response) => {
+        if (
+          !(
+            response &&
+            'result' in response &&
+            response.result === 'Created' &&
+            refPassword.current &&
+            refLogin.current
+          )
+        ) {
+          return;
+        }
+        getUser(refLogin.current.value, refPassword.current.value).then((responseDataUser) => {
+          if (!(responseDataUser && 'token' in responseDataUser)) {
+            return;
+          }
+          localStorage.setItem('token', responseDataUser.token);
+          localStorage.setItem('refreshToken', responseDataUser.refreshToken);
+          if (responseDataUser.result === 'Authorized') {
+            navigate('/');
+          }
+        });
+      });
     }
   };
 
@@ -104,18 +133,59 @@ function RegistrationForm(): JSX.Element {
     }
   };
 
+  const togglePasswordVisibility = (event: React.MouseEvent<HTMLSpanElement>): void => {
+    event.preventDefault();
+    if (!refPassword.current) {
+      return;
+    }
+    const { currentTarget } = event;
+    if (isUnLockPassword) {
+      refPassword.current.type = 'password';
+      setIsUnlockPassword(false);
+      currentTarget.style.backgroundImage = `url(${lockPasswordImage})`;
+    } else {
+      refPassword.current.type = 'text';
+      setIsUnlockPassword(true);
+      currentTarget.style.backgroundImage = `url(${unlockPasswordImage})`;
+    }
+  };
+
+  const toggleRepeatPasswordVisibility = (event: React.MouseEvent<HTMLSpanElement>): void => {
+    event.preventDefault();
+    if (!refRepeatPassword.current || !event.target) {
+      return;
+    }
+    const { currentTarget } = event;
+    if (isUnLockRepeatPassword) {
+      refRepeatPassword.current.type = 'password';
+      setIsUnlockRepeatPassword(false);
+      currentTarget.style.backgroundImage = `url(${lockPasswordImage})`;
+    } else {
+      refRepeatPassword.current.type = 'text';
+      setIsUnlockRepeatPassword(true);
+      currentTarget.style.backgroundImage = `url(${unlockPasswordImage})`;
+    }
+  };
+
   return (
     <form className={styles.registerForm} onSubmit={handleSubmit}>
       <label className={styles.setLoginRegister}>
         login
-        {noValidLogin && <p>login entered incorrectly </p>}
-        <input type="text" ref={refLogin} />
+        {noValidLogin && <p>the login must be in the format example@exm.ex </p>}
+        <input type="text" ref={refLogin} placeholder="example: example@gmail.com" />
       </label>
 
       <label className={styles.setPasswordRegister}>
         password
         {errors && <p>{errors}</p>}
-        <input type="text" ref={refPassword} placeholder="enter password" onChange={handleInputPassword} />
+        <div className={styles.passwordContainer}>
+          <input type="password" ref={refPassword} placeholder="enter password" onChange={handleInputPassword} />
+          <span
+            className={styles.indicatorPassword}
+            style={{ backgroundImage: `url(${lockPasswordImage})` }}
+            onClick={togglePasswordVisibility}
+          />
+        </div>
         <div className={styles.blockIndicators}>
           <span className={styles.indicator} ref={indicatorRef4} />
           <span className={styles.indicator} ref={indicatorRef3} />
@@ -127,7 +197,14 @@ function RegistrationForm(): JSX.Element {
       <label className={styles.setPasswordRegister}>
         repeat password
         {noRepeatPassword && <p>passwords do not match</p>}
-        <input type="text" ref={refRepeatPassword} />
+        <div className={styles.passwordContainer}>
+          <input type="password" ref={refRepeatPassword} placeholder="enter repeat password" />
+          <span
+            className={styles.indicatorPassword}
+            style={{ backgroundImage: `url(${lockPasswordImage})` }}
+            onClick={toggleRepeatPasswordVisibility}
+          />
+        </div>
       </label>
 
       <button type="submit" className={styles.buttonAccept}>
@@ -137,4 +214,4 @@ function RegistrationForm(): JSX.Element {
   );
 }
 
-export default RegistrationForm;
+export default React.memo(RegistrationForm);

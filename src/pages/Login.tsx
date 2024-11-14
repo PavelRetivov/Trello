@@ -9,7 +9,7 @@ function Login(): JSX.Element {
       <div className={styles.blockLogin}>
         <h1>autorisation</h1>
         <LoginForm />
-        <footer>
+        <footer className={styles.footerAutorisation}>
           <p>For the first time here</p>
           <Link to="/Registration"> sign up</Link>
         </footer>
@@ -18,4 +18,4 @@ function Login(): JSX.Element {
   );
 }
 
-export default Login;
+export default React.memo(Login);

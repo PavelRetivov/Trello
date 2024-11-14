@@ -13,6 +13,11 @@
     flex-direction: column;
     justify-content: space-around;
     padding: 2rem;
+    @media (max-width: 1020px) {
+      width: 18rem;
+      height: 25rem;
+      padding: 1.5rem 2rem 1.5rem 2rem;
+    }
     h1 {
       text-align: center;
     }
@@ -28,6 +33,10 @@
   justify-content: space-around;
   display: flex;
   flex-direction: column;
+  @media (max-width: 1020px) {
+    padding: 0rem 2rem 0rem 2rem;
+    justify-content: flex-start;
+  }
   .setLoginRegister,
   .setPasswordRegister {
     display: flex;
@@ -38,6 +47,28 @@
       font-size: 0.9rem;
       line-height: 0.9rem;
       color: #6b1119;
+      @media (max-width: 1020px) {
+        font-size: 0.5rem;
+        line-height: 0.5rem;
+      }
+    }
+    .passwordContainer {
+      position: relative;
+      display: flex;
+      input {
+        width: 100%;
+      }
+      .indicatorPassword {
+        width: 1rem;
+        height: 0.7rem;
+        position: absolute;
+        top: 50%;
+        left: 92%;
+        transform: translate(-50%, -50%);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
     }
   }
   .blockIndicators {
@@ -56,5 +87,14 @@
     height: 2rem;
     margin: 0 auto;
     margin-top: 1rem;
+  }
+}
+.footerAutorisation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  @media (max-width: 1020px) {
+    font-size: 0.8rem;
   }
 }

@@ -170,13 +170,13 @@ function RegistrationForm(): JSX.Element {
   return (
     <form className={styles.registerForm} onSubmit={handleSubmit}>
       <label className={styles.setLoginRegister}>
-        login
+        Login
         {noValidLogin && <p>the login must be in the format example@exm.ex </p>}
         <input type="text" ref={refLogin} placeholder="example: example@gmail.com" />
       </label>
 
       <label className={styles.setPasswordRegister}>
-        password
+        Password
         {errors && <p>{errors}</p>}
         <div className={styles.passwordContainer}>
           <input type="password" ref={refPassword} placeholder="enter password" onChange={handleInputPassword} />
@@ -195,7 +195,7 @@ function RegistrationForm(): JSX.Element {
       </label>
 
       <label className={styles.setPasswordRegister}>
-        repeat password
+        Repeat password
         {noRepeatPassword && <p>passwords do not match</p>}
         <div className={styles.passwordContainer}>
           <input type="password" ref={refRepeatPassword} placeholder="enter repeat password" />

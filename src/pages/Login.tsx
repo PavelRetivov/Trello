@@ -7,7 +7,7 @@ function Login(): JSX.Element {
   return (
     <div className={styles.container}>
       <div className={styles.blockLogin}>
-        <h1>autorisation</h1>
+        <h1>Autorisation</h1>
         <LoginForm />
         <footer className={styles.footerAutorisation}>
           <p>For the first time here</p>

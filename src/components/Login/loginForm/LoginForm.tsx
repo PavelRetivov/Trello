@@ -52,12 +52,12 @@ function LoginForm(): JSX.Element {
   return (
     <form className={styles.loginForm} onSubmit={handleSubmit}>
       <label className={styles.setLogin}>
-        login
+        Login
         <input type="text" ref={refLogin} placeholder="example: example@gmail.com" />
       </label>
 
       <label className={styles.setPassword}>
-        password
+        Password
         {errors && <p>{errors}</p>}
         <div className={styles.passwordContainer}>
           <input type="password" ref={refPassword} placeholder="enter password" />

@@ -13,10 +13,10 @@ function Registration(): JSX.Element {
   return (
     <div className={styles.containerRegistration}>
       <div className={styles.blockRegistration}>
-        <h1>registration</h1>
+        <h1>Registration</h1>
         <RegistrationForm />
         <footer className={styles.footerAutorisation}>
-          <p>you have in account</p>
+          <p>You have in account</p>
           <Link to="/Login"> sign in</Link>
         </footer>
       </div>

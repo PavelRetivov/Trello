@@ -36,6 +36,7 @@ instance.interceptors.response.use(
     }
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
+      window.location.href = '/Trello/#/login';
       return Promise.reject(error);
     }
     isRefreshing = true;
@@ -51,6 +52,7 @@ instance.interceptors.response.use(
         typeof dataUserResponse.refreshToken === 'string'
       )
     ) {
+      window.location.href = '/Trello/#/login';
       return Promise.reject(error);
     }
     if (dataUserResponse.result === 'Authorized') {

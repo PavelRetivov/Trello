@@ -26,7 +26,8 @@ instance.interceptors.response.use(
   },
   async (error) => {
     if (!(error.response && error.response.status === 401 && !isRefreshing)) {
-      return instance.request(error);
+      console.log('tikens');
+      return Promise.reject(error);
     }
 
     const token = localStorage.getItem('token');
@@ -40,26 +41,33 @@ instance.interceptors.response.use(
       return Promise.reject(error);
     }
     isRefreshing = true;
-    const dataUserResponse = await instance.post('/refresh', {
-      refreshToken,
-    });
-    if (
-      !(
-        'result' in dataUserResponse &&
-        'token' in dataUserResponse &&
-        'refreshToken' in dataUserResponse &&
-        typeof dataUserResponse.token === 'string' &&
-        typeof dataUserResponse.refreshToken === 'string'
-      )
-    ) {
+    try {
+      const dataUserResponse = await instance.post('/refresh', {
+        refreshToken,
+      });
+      if (
+        !(
+          'result' in dataUserResponse &&
+          'token' in dataUserResponse &&
+          'refreshToken' in dataUserResponse &&
+          typeof dataUserResponse.token === 'string' &&
+          typeof dataUserResponse.refreshToken === 'string'
+        )
+      ) {
+        window.location.href = '/Trello/#/login';
+        return Promise.reject(error);
+      }
+      if (dataUserResponse.result === 'Authorized') {
+        localStorage.setItem('token', dataUserResponse.token);
+        localStorage.setItem('refreshToken', dataUserResponse.refreshToken);
+        error.config.headers.Authorization = `Bearer ${dataUserResponse.token}`;
+        return instance.request(error.config);
+      }
+    } catch {
+      console.log('catch');
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
       window.location.href = '/Trello/#/login';
-      return Promise.reject(error);
-    }
-    if (dataUserResponse.result === 'Authorized') {
-      localStorage.setItem('token', dataUserResponse.token);
-      localStorage.setItem('refreshToken', dataUserResponse.refreshToken);
-      error.config.headers.Authorization = `Bearer ${dataUserResponse.token}`;
-      return instance.request(error.config);
     }
 
     isRefreshing = false;
